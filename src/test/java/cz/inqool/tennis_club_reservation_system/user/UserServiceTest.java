@@ -1,8 +1,8 @@
-package cz.inqool.tennis_club_reservation_system.auth.user;
+package cz.inqool.tennis_club_reservation_system.user;
 
-import cz.inqool.tennis_club_reservation_system.auth.role.Role;
-import cz.inqool.tennis_club_reservation_system.auth.role.RoleRepository;
-import cz.inqool.tennis_club_reservation_system.auth.user.dto.UserDto;
+import cz.inqool.tennis_club_reservation_system.role.Role;
+import cz.inqool.tennis_club_reservation_system.role.RoleRepository;
+import cz.inqool.tennis_club_reservation_system.user.dto.UserDto;
 import cz.inqool.tennis_club_reservation_system.exceptions.ServiceException;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
@@ -17,7 +17,6 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.util.List;
 import java.util.Optional;
 
-import static cz.inqool.tennis_club_reservation_system.auth.user.UserFactory.*;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.*;
@@ -43,10 +42,10 @@ public class UserServiceTest {
 
     @Test
     public void saveUser_givenValidUser_saves() {
-        var userCreateDto = createUserCreateDto("karl51", "myPa55w0rd");
-        var user = createUser(null, "karl51", "hashedPassword2");
-        var savedUser = createUser(2L, "karl51", "hashedPassword2");
-        var userDto = createUserDto(2L, "karl51");
+        var userCreateDto = UserFactory.createUserCreateDto("karl51", "myPa55w0rd");
+        var user = UserFactory.createUser(null, "karl51", "hashedPassword2");
+        var savedUser = UserFactory.createUser(2L, "karl51", "hashedPassword2");
+        var userDto = UserFactory.createUserDto(2L, "karl51");
 
         when(userRepository.save(user))
                 .thenReturn(savedUser);
@@ -64,7 +63,7 @@ public class UserServiceTest {
 
     @Test
     public void editUser_givenMissingUser_throws() {
-        var userEditDto = createUserEditDto(999L, "karl555");
+        var userEditDto = UserFactory.createUserEditDto(999L, "karl555");
 
         when(userRepository.findById(999L))
                 .thenReturn(Optional.empty());
@@ -76,9 +75,9 @@ public class UserServiceTest {
 
     @Test
     public void editUser_givenValidUser_updates() {
-        var userEditDto = createUserEditDto(2L, "karl555");
-        var user = createUser(2L, "hashedPassword2");
-        var userDto = createUserDto(2L, "hashedPassword2");
+        var userEditDto = UserFactory.createUserEditDto(2L, "karl555");
+        var user = UserFactory.createUser(2L, "hashedPassword2");
+        var userDto = UserFactory.createUserDto(2L, "hashedPassword2");
 
         when(userRepository.findById(any()))
                 .thenReturn(Optional.of(user));
@@ -104,8 +103,8 @@ public class UserServiceTest {
 
     @Test
     public void deleteUser_givenUser_deletes() {
-        var user = createUser(1L, "demo");
-        var expected = createUserDto(1L, "demo");
+        var user = UserFactory.createUser(1L, "demo");
+        var expected = UserFactory.createUserDto(1L, "demo");
 
         when(userRepository.findById(eq(1L))).thenReturn(Optional.of(user));
 
@@ -117,8 +116,8 @@ public class UserServiceTest {
 
     @Test
     public void findAllUsers_withTwoUsers_returnsAll() {
-        var users = List.of(createUser(1L, "a1"), createUser(2L, "b1"));
-        var userDtos = List.of(createUserDto(1L, "a1"), createUserDto(2L, "b1"));
+        var users = List.of(UserFactory.createUser(1L, "a1"), UserFactory.createUser(2L, "b1"));
+        var userDtos = List.of(UserFactory.createUserDto(1L, "a1"), UserFactory.createUserDto(2L, "b1"));
         var pageable = mock(Pageable.class);
 
         when(userRepository.findAll(any(Pageable.class)))
@@ -131,8 +130,8 @@ public class UserServiceTest {
 
     @Test
     public void findUserById_givenExistingId_returns() {
-        var user = createUser(2L, "karl51");
-        var userDto = createUserDto(2L, "karl51");
+        var user = UserFactory.createUser(2L, "karl51");
+        var userDto = UserFactory.createUserDto(2L, "karl51");
 
         when(userRepository.findById(2L))
                 .thenReturn(Optional.of(user));
@@ -152,8 +151,8 @@ public class UserServiceTest {
 
     @Test
     public void findUserByUsername_givenExistingUser_returns() {
-        var user = createUser(2L, "karl51");
-        var userDto = createUserDto(2L, "karl51");
+        var user = UserFactory.createUser(2L, "karl51");
+        var userDto = UserFactory.createUserDto(2L, "karl51");
 
         when(userRepository.findByUsername("karl51"))
                 .thenReturn(Optional.of(user));

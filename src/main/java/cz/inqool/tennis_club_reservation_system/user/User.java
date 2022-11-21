@@ -1,7 +1,7 @@
-package cz.inqool.tennis_club_reservation_system.auth.user;
+package cz.inqool.tennis_club_reservation_system.user;
 
 
-import cz.inqool.tennis_club_reservation_system.auth.role.Role;
+import cz.inqool.tennis_club_reservation_system.role.Role;
 import lombok.*;
 import org.springframework.data.annotation.PersistenceCreator;
 import org.springframework.security.core.GrantedAuthority;

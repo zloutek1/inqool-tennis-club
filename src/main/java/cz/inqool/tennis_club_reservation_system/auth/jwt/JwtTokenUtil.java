@@ -1,6 +1,6 @@
 package cz.inqool.tennis_club_reservation_system.auth.jwt;
 
-import cz.inqool.tennis_club_reservation_system.auth.user.dto.UserDto;
+import cz.inqool.tennis_club_reservation_system.user.dto.UserDto;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;

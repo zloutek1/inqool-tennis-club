@@ -1,4 +1,4 @@
-package cz.inqool.tennis_club_reservation_system.auth.user.dto;
+package cz.inqool.tennis_club_reservation_system.user.dto;
 
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;

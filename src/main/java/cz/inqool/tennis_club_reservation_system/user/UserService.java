@@ -1,10 +1,10 @@
-package cz.inqool.tennis_club_reservation_system.auth.user;
+package cz.inqool.tennis_club_reservation_system.user;
 
-import cz.inqool.tennis_club_reservation_system.auth.role.Role;
-import cz.inqool.tennis_club_reservation_system.auth.role.RoleRepository;
-import cz.inqool.tennis_club_reservation_system.auth.user.dto.UserCreateDto;
-import cz.inqool.tennis_club_reservation_system.auth.user.dto.UserDto;
-import cz.inqool.tennis_club_reservation_system.auth.user.dto.UserEditDto;
+import cz.inqool.tennis_club_reservation_system.role.Role;
+import cz.inqool.tennis_club_reservation_system.role.RoleRepository;
+import cz.inqool.tennis_club_reservation_system.user.dto.UserCreateDto;
+import cz.inqool.tennis_club_reservation_system.user.dto.UserDto;
+import cz.inqool.tennis_club_reservation_system.user.dto.UserEditDto;
 import cz.inqool.tennis_club_reservation_system.commons.BeanMappingService;
 import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
 import lombok.extern.slf4j.Slf4j;

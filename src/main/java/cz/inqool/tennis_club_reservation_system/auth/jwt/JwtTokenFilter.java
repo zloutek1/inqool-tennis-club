@@ -1,6 +1,6 @@
 package cz.inqool.tennis_club_reservation_system.auth.jwt;
 
-import cz.inqool.tennis_club_reservation_system.auth.user.UserService;
+import cz.inqool.tennis_club_reservation_system.user.UserService;
 import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpHeaders;

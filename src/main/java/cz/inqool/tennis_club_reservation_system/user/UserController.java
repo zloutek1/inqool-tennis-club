@@ -1,8 +1,8 @@
-package cz.inqool.tennis_club_reservation_system.auth.user;
+package cz.inqool.tennis_club_reservation_system.user;
 
-import cz.inqool.tennis_club_reservation_system.auth.user.dto.UserCreateDto;
-import cz.inqool.tennis_club_reservation_system.auth.user.dto.UserDto;
-import cz.inqool.tennis_club_reservation_system.auth.user.dto.UserEditDto;
+import cz.inqool.tennis_club_reservation_system.user.dto.UserCreateDto;
+import cz.inqool.tennis_club_reservation_system.user.dto.UserDto;
+import cz.inqool.tennis_club_reservation_system.user.dto.UserEditDto;
 import cz.inqool.tennis_club_reservation_system.configs.ApiUris;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;

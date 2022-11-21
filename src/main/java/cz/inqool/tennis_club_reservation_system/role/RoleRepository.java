@@ -1,4 +1,4 @@
-package cz.inqool.tennis_club_reservation_system.auth.role;
+package cz.inqool.tennis_club_reservation_system.role;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

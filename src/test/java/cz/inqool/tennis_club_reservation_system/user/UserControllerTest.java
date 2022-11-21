@@ -1,6 +1,6 @@
-package cz.inqool.tennis_club_reservation_system.auth.user;
+package cz.inqool.tennis_club_reservation_system.user;
 
-import cz.inqool.tennis_club_reservation_system.auth.user.dto.UserDto;
+import cz.inqool.tennis_club_reservation_system.user.dto.UserDto;
 import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.Optional;
 
 import static cz.inqool.tennis_club_reservation_system.TestUtils.convertToJson;
-import static cz.inqool.tennis_club_reservation_system.auth.user.UserFactory.*;
+import static cz.inqool.tennis_club_reservation_system.user.UserFactory.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;

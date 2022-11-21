@@ -1,7 +1,8 @@
-package cz.inqool.tennis_club_reservation_system.auth.role;
+package cz.inqool.tennis_club_reservation_system.role;
 
-import cz.inqool.tennis_club_reservation_system.auth.role.dto.RoleCreateDto;
-import cz.inqool.tennis_club_reservation_system.auth.role.dto.RoleDto;
+import cz.inqool.tennis_club_reservation_system.role.Role;
+import cz.inqool.tennis_club_reservation_system.role.dto.RoleCreateDto;
+import cz.inqool.tennis_club_reservation_system.role.dto.RoleDto;
 
 public class RoleFactory {
 

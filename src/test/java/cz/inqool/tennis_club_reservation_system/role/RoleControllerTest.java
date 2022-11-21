@@ -1,6 +1,6 @@
-package cz.inqool.tennis_club_reservation_system.auth.role;
+package cz.inqool.tennis_club_reservation_system.role;
 
-import cz.inqool.tennis_club_reservation_system.auth.role.dto.RoleDto;
+import cz.inqool.tennis_club_reservation_system.role.dto.RoleDto;
 import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,8 +16,6 @@ import org.springframework.test.web.servlet.MockMvc;
 import java.util.List;
 
 import static cz.inqool.tennis_club_reservation_system.TestUtils.convertToJson;
-import static cz.inqool.tennis_club_reservation_system.auth.role.RoleFactory.createRoleCreateDto;
-import static cz.inqool.tennis_club_reservation_system.auth.role.RoleFactory.createRoleDto;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -39,8 +37,8 @@ public class RoleControllerTest {
     @WithMockUser(username="spring", authorities = "ADMIN")
     public void findAllRoles_withTwoRoles_shouldReturnPaginatedRoles() throws Exception {
         List<RoleDto> users = List.of(
-                createRoleDto(1L, "USER"),
-                createRoleDto(2L, "ADMIN")
+                RoleFactory.createRoleDto(1L, "USER"),
+                RoleFactory.createRoleDto(2L, "ADMIN")
         );
 
         when(roleService.findAllRoles(any(Pageable.class)))
@@ -56,8 +54,8 @@ public class RoleControllerTest {
     @Test
     @WithMockUser(username="spring", authorities = "ADMIN")
     public void newRole_withValidForm_shouldCreateAndReturnNewRole() throws Exception {
-        var createDto = createRoleCreateDto("USER");
-        var createdRoleDto = createRoleDto(1L, "USER");
+        var createDto = RoleFactory.createRoleCreateDto("USER");
+        var createdRoleDto = RoleFactory.createRoleDto(1L, "USER");
 
         when(roleService.saveRole(createDto))
                 .thenReturn(createdRoleDto);
@@ -73,8 +71,8 @@ public class RoleControllerTest {
     @Test
     @WithMockUser(username="spring", authorities = "ADMIN")
     public void editRole_withValidForm_shouldEditAndReturnEditedRole() throws Exception {
-        var roleDto = createRoleDto(1L, "USER");
-        var editedRole = createRoleDto(1L, "USER");
+        var roleDto = RoleFactory.createRoleDto(1L, "USER");
+        var editedRole = RoleFactory.createRoleDto(1L, "USER");
 
         when(roleService.editRole(roleDto))
                 .thenReturn(editedRole);
@@ -90,7 +88,7 @@ public class RoleControllerTest {
     @Test
     @WithMockUser(username="spring", authorities = "ADMIN")
     public void editRole_withInvalidForm_returnsNotFound() throws Exception {
-        var roleDto = createRoleDto(999L, "USER");
+        var roleDto = RoleFactory.createRoleDto(999L, "USER");
 
         when(roleService.editRole(roleDto))
                 .thenThrow(new NotFoundException("Role with id 999 not found"));
@@ -114,7 +112,7 @@ public class RoleControllerTest {
     @Test
     @WithMockUser(username="spring", authorities = "ADMIN")
     public void deleteRole_withValidId_shouldDeleteUseAndReturnDeleted() throws Exception {
-        var deleteDto = createRoleDto(1L, "USER");
+        var deleteDto = RoleFactory.createRoleDto(1L, "USER");
 
         when(roleService.deleteRole(1L))
                 .thenReturn(deleteDto);
