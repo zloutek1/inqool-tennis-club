@@ -8,7 +8,6 @@ import cz.inqool.tennis_club_reservation_system.auth.refresh_token.dto.AuthReque
 import cz.inqool.tennis_club_reservation_system.auth.refresh_token.dto.AuthResponseDto;
 import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
 import cz.inqool.tennis_club_reservation_system.exceptions.RefreshTokenExpiredException;
-import cz.inqool.tennis_club_reservation_system.user.UserService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -50,9 +49,6 @@ public class AuthControllerTest {
 
     @MockBean
     private RefreshTokenService refreshTokenService;
-
-    @MockBean
-    private UserService userService;
 
     @MockBean
     private JwtTokenUtil jwtTokenUtil;

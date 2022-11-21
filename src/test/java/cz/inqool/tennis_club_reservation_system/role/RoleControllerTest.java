@@ -1,8 +1,11 @@
 package cz.inqool.tennis_club_reservation_system.role;
 
-import cz.inqool.tennis_club_reservation_system.role.dto.RoleDto;
 import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
+import cz.inqool.tennis_club_reservation_system.role.dto.RoleDto;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,10 +15,14 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
 
 import java.util.List;
+import java.util.stream.Stream;
 
 import static cz.inqool.tennis_club_reservation_system.TestUtils.convertToJson;
+import static cz.inqool.tennis_club_reservation_system.role.RoleFactory.createRoleCreateDto;
+import static cz.inqool.tennis_club_reservation_system.role.RoleFactory.createRoleDto;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -37,8 +44,8 @@ public class RoleControllerTest {
     @WithMockUser(username="spring", authorities = "ADMIN")
     public void findAllRoles_withTwoRoles_shouldReturnPaginatedRoles() throws Exception {
         List<RoleDto> users = List.of(
-                RoleFactory.createRoleDto(1L, "USER"),
-                RoleFactory.createRoleDto(2L, "ADMIN")
+                createRoleDto(1L, "USER"),
+                createRoleDto(2L, "ADMIN")
         );
 
         when(roleService.findAllRoles(any(Pageable.class)))
@@ -55,7 +62,7 @@ public class RoleControllerTest {
     @WithMockUser(username="spring", authorities = "ADMIN")
     public void newRole_withValidForm_shouldCreateAndReturnNewRole() throws Exception {
         var createDto = RoleFactory.createRoleCreateDto("USER");
-        var createdRoleDto = RoleFactory.createRoleDto(1L, "USER");
+        var createdRoleDto = createRoleDto(1L, "USER");
 
         when(roleService.saveRole(createDto))
                 .thenReturn(createdRoleDto);
@@ -71,8 +78,8 @@ public class RoleControllerTest {
     @Test
     @WithMockUser(username="spring", authorities = "ADMIN")
     public void editRole_withValidForm_shouldEditAndReturnEditedRole() throws Exception {
-        var roleDto = RoleFactory.createRoleDto(1L, "USER");
-        var editedRole = RoleFactory.createRoleDto(1L, "USER");
+        var roleDto = createRoleDto(1L, "USER");
+        var editedRole = createRoleDto(1L, "USER");
 
         when(roleService.editRole(roleDto))
                 .thenReturn(editedRole);
@@ -88,7 +95,7 @@ public class RoleControllerTest {
     @Test
     @WithMockUser(username="spring", authorities = "ADMIN")
     public void editRole_withInvalidForm_returnsNotFound() throws Exception {
-        var roleDto = RoleFactory.createRoleDto(999L, "USER");
+        var roleDto = createRoleDto(999L, "USER");
 
         when(roleService.editRole(roleDto))
                 .thenThrow(new NotFoundException("Role with id 999 not found"));
@@ -112,7 +119,7 @@ public class RoleControllerTest {
     @Test
     @WithMockUser(username="spring", authorities = "ADMIN")
     public void deleteRole_withValidId_shouldDeleteUseAndReturnDeleted() throws Exception {
-        var deleteDto = RoleFactory.createRoleDto(1L, "USER");
+        var deleteDto = createRoleDto(1L, "USER");
 
         when(roleService.deleteRole(1L))
                 .thenReturn(deleteDto);
@@ -122,4 +129,29 @@ public class RoleControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.name").value("USER"));
     }
+
+    @ParameterizedTest
+    @MethodSource("protectedUrls")
+    public void endpoint_withoutLogin_returns401(RequestBuilder requestBuilder) throws Exception {
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isUnauthorized());
+    }
+
+    @ParameterizedTest
+    @MethodSource("protectedUrls")
+    @WithMockUser(username="spring", authorities = "USER")
+    public void endpoint_withoutPermissions_returns403(RequestBuilder requestBuilder) throws Exception {
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isForbidden());
+    }
+
+    private static Stream<Arguments> protectedUrls() throws Exception {
+        return Stream.of(
+                Arguments.of(get("/api/v1/role/")),
+                Arguments.of(put("/api/v1/role/new").content(convertToJson(createRoleCreateDto("a"))).contentType(MediaType.APPLICATION_JSON)),
+                Arguments.of(put("/api/v1/role/edit").content(convertToJson(createRoleDto(1L, "A"))).contentType(MediaType.APPLICATION_JSON)),
+                Arguments.of(delete("/api/v1/role/delete/1"))
+        );
+    }
+
 }

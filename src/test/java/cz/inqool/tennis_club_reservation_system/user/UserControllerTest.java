@@ -1,8 +1,11 @@
 package cz.inqool.tennis_club_reservation_system.user;
 
-import cz.inqool.tennis_club_reservation_system.user.dto.UserDto;
 import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
+import cz.inqool.tennis_club_reservation_system.user.dto.UserDto;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.Arguments;
+import org.junit.jupiter.params.provider.MethodSource;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,9 +15,11 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.RequestBuilder;
 
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Stream;
 
 import static cz.inqool.tennis_club_reservation_system.TestUtils.convertToJson;
 import static cz.inqool.tennis_club_reservation_system.user.UserFactory.*;
@@ -233,4 +238,33 @@ public class UserControllerTest {
         mockMvc.perform(post("/api/v1/user/kayle22/role/missingRole/remove"))
                 .andExpect(status().isNotFound());
     }
+
+    @ParameterizedTest
+    @MethodSource("protectedUrls")
+    public void endpoint_withoutLogin_returns401(RequestBuilder requestBuilder) throws Exception {
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isUnauthorized());
+    }
+
+    @ParameterizedTest
+    @MethodSource("protectedUrls")
+    @WithMockUser(username="spring", authorities = "USER")
+    public void endpoint_withoutPermissions_returns403(RequestBuilder requestBuilder) throws Exception {
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isForbidden());
+    }
+
+    private static Stream<Arguments> protectedUrls() throws Exception {
+        return Stream.of(
+                Arguments.of(get("/api/v1/user/")),
+                Arguments.of(get("/api/v1/user/1")),
+                Arguments.of(get("/api/v1/user/kyle22")),
+                Arguments.of(put("/api/v1/user/new").content(convertToJson(createUserCreateDto("a"))).contentType(MediaType.APPLICATION_JSON)),
+                Arguments.of(put("/api/v1/user/edit").content(convertToJson(createUserEditDto(1L, "A"))).contentType(MediaType.APPLICATION_JSON)),
+                Arguments.of(delete("/api/v1/user/delete/1")),
+                Arguments.of(post("/api/v1/user/kayle22/role/ADMIN/add")),
+                Arguments.of(post("/api/v1/user/kayle22/role/ADMIN/remove"))
+        );
+    }
+
 }
