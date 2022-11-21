@@ -1,5 +1,6 @@
 package cz.inqool.tennis_club_reservation_system.role;
 
+import cz.inqool.tennis_club_reservation_system.exceptions.ServiceException;
 import cz.inqool.tennis_club_reservation_system.role.dto.RoleCreateDto;
 import cz.inqool.tennis_club_reservation_system.role.dto.RoleDto;
 import org.junit.jupiter.api.Test;
@@ -10,8 +11,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.*;
 
@@ -38,6 +41,59 @@ public class RoleServiceTest {
         verify(roleRepository).save(any(Role.class));
         assertThat(actual)
                 .isEqualTo(expected);
+    }
+
+    @Test
+    public void editRole_givenMissingRole_throws() {
+        var roleDto = RoleFactory.createRoleDto(999L, "USER");
+
+        when(roleRepository.findById(999L))
+                .thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(ServiceException.class)
+                .isThrownBy(() -> roleService.editRole(roleDto))
+                .withMessage("Role with id 999 not found");
+    }
+
+    @Test
+    public void editRole_givenValidRole_updates() {
+        var roleEditDto = RoleFactory.createRoleDto(2L, "USER");
+        var role = RoleFactory.createRole(2L, "ADMIN");
+        var roleDto = RoleFactory.createRoleDto(2L, "ADMIN");
+
+        when(roleRepository.findById(any()))
+                .thenReturn(Optional.of(role));
+        when(roleRepository.save(any()))
+                .thenReturn(role);
+
+        var editedUser = roleService.editRole(roleEditDto);
+
+        verify(roleRepository).save(any(Role.class));
+        assertThat(editedUser).isEqualTo(roleDto);
+    }
+
+    @Test
+    public void deleteRole_givenInvalidRole_throws() {
+        when(roleRepository.findById(eq(1L)))
+                .thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(ServiceException.class)
+                .isThrownBy(() -> roleService.deleteRole(1L))
+                .withMessage("Role with id 1 not found");
+    }
+
+    @Test
+    public void deleteRole_givenValidRole_deletes() {
+        var role = RoleFactory.createRole(1L, "USER");
+        var expected = RoleFactory.createRoleDto(1L, "USER");
+
+        when(roleRepository.findById(eq(1L)))
+                .thenReturn(Optional.of(role));
+
+        RoleDto actual = roleService.deleteRole(1L);
+
+        verify(roleRepository).deleteById(1L);
+        assertThat(actual).isEqualTo(expected);
     }
 
     @Test
