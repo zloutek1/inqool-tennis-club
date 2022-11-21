@@ -1,11 +1,13 @@
 package cz.inqool.tennis_club_reservation_system.user;
 
-import cz.inqool.tennis_club_reservation_system.user.User;
 import cz.inqool.tennis_club_reservation_system.user.dto.UserCreateDto;
 import cz.inqool.tennis_club_reservation_system.user.dto.UserDto;
 import cz.inqool.tennis_club_reservation_system.user.dto.UserEditDto;
 
+import java.util.HashSet;
 import java.util.List;
+
+import static cz.inqool.tennis_club_reservation_system.role.RoleFactory.createRole;
 
 public class UserFactory {
 
@@ -28,6 +30,17 @@ public class UserFactory {
     public static User createUser(Long id, String username, String password) {
         var user = createUser(id, username);
         user.setPassword(password);
+        return user;
+    }
+
+    public static User createUser(Long id, String username, List<String> roleNames) {
+        var user = createUser(id, username);
+
+        user.setRoles(new HashSet<>());
+        for (int i = 0; i < roleNames.size(); ++i) {
+            user.addRole(createRole((long) i, roleNames.get(i)));
+        }
+
         return user;
     }
 

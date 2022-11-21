@@ -48,7 +48,7 @@ public class SecurityConfig {
                 ApiUris.ROOT_URI + "/swagger-ui/**",
 
                 // -- our public API endpoints
-                ApiUris.ROOT_URI + ApiUris.AUTH_SIGNIN,
+                ApiUris.ROOT_URI + ApiUris.AUTH_LOGIN,
                 ApiUris.ROOT_URI + ApiUris.AUTH_REFRESH,
         };
     }

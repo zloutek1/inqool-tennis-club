@@ -4,7 +4,7 @@ public abstract class ApiUris {
 
     public static final String ROOT_URI = "/api/v1";
 
-    public static final String AUTH_SIGNIN = "/auth/signin";
+    public static final String AUTH_LOGIN = "/auth/login";
     public static final String AUTH_REFRESH = "/auth/refresh";
 
     public static final String USER_NEW = "/user/new";
