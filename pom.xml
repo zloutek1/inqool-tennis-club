@@ -1,0 +1,265 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+		<groupId>org.springframework.boot</groupId>
+		<artifactId>spring-boot-starter-parent</artifactId>
+		<version>2.7.0</version>
+		<relativePath/> <!-- lookup parent from repository -->
+	</parent>
+
+	<groupId>cz.inqool</groupId>
+	<artifactId>tennis-club-reservation-system</artifactId>
+	<version>0.0.1-SNAPSHOT</version>
+	<name>Tennis club reservation system</name>
+	<description>API for management of reservation for a tennis club</description>
+
+	<properties>
+		<java.version>11</java.version>
+		<spring-boot.version>2.7.5</spring-boot.version>
+	</properties>
+
+	<dependencies>
+		<!--
+		 - - - - - - - - - - - - [[ Backend ]] - - - - - - - - - - - -
+		 -->
+
+		<!-- spring java persistence API
+		   - JPA
+		   - Hibernate
+		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-data-jpa</artifactId>
+			<version>${spring-boot.version}</version>
+		</dependency>
+
+		<!-- spring web
+		   - spring MVC
+		   - REST API
+		   - Apache Tomcat 9
+		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-web</artifactId>
+			<version>${spring-boot.version}</version>
+		</dependency>
+
+		<!-- spring security
+		   - handles login sessions
+		   - handles api endpoint for login
+		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-security</artifactId>
+			<version>${spring-boot.version}</version>
+		</dependency>
+
+		<!-- database connection handlers -->
+		<dependency>
+			<groupId>com.h2database</groupId>
+			<artifactId>h2</artifactId>
+			<scope>runtime</scope>
+			<version>2.1.214</version>
+		</dependency>
+
+		<!-- lombok annotations -->
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.24</version>
+			<optional>true</optional>
+		</dependency>
+
+		<!-- object mapper -->
+		<dependency>
+			<groupId>org.modelmapper</groupId>
+			<artifactId>modelmapper</artifactId>
+			<version>3.1.0</version>
+		</dependency>
+
+		<!-- jwt token -->
+		<dependency>
+			<groupId>io.jsonwebtoken</groupId>
+			<artifactId>jjwt</artifactId>
+			<version>0.9.1</version>
+		</dependency>
+
+		<!-- data validation -->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-validation</artifactId>
+			<version>${spring-boot.version}</version>
+		</dependency>
+
+		<!-- password validation -->
+		<dependency>
+			<groupId>org.passay</groupId>
+			<artifactId>passay</artifactId>
+			<version>1.6.2</version>
+		</dependency>
+
+
+		<!--
+		 - - - - - - - - - - - - - [[ Documentation ]] - - - - - - - - - - - - -
+		 -->
+
+		<dependency>
+			<groupId>org.springdoc</groupId>
+			<artifactId>springdoc-openapi-ui</artifactId>
+			<version>1.6.12</version>
+			<optional>true</optional>
+		</dependency>
+
+		<!--
+		 - - - - - - - - - - - - - - [[ Testing ]] - - - - - - - - - - - - - -
+		 -->
+
+		<!-- spring testing utilities
+		   - JUnit
+		   - spring test
+		   - AssertJ
+		   - Hamcrest
+		   - Mockito
+		   - JSONAssert
+		   - JsonPath
+		-->
+		<dependency>
+			<groupId>org.springframework.boot</groupId>
+			<artifactId>spring-boot-starter-test</artifactId>
+			<version>${spring-boot.version}</version>
+		</dependency>
+
+		<!-- spring security tests -->
+		<dependency>
+			<groupId>org.springframework.security</groupId>
+			<artifactId>spring-security-test</artifactId>
+			<version>5.7.3</version>
+			<scope>test</scope>
+		</dependency>
+    </dependencies>
+
+	<build>
+		<plugins>
+			<!-- plugin compiler -->
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.10.1</version>
+				<configuration>
+					<verbose>true</verbose>
+				</configuration>
+			</plugin>
+
+			<!-- spring boot packaging utilities -->
+			<plugin>
+				<groupId>org.springframework.boot</groupId>
+				<artifactId>spring-boot-maven-plugin</artifactId>
+				<version>2.7.5</version>
+				<configuration>
+					<excludes>
+						<exclude>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+						</exclude>
+					</excludes>
+				</configuration>
+			</plugin>
+
+			<!-- code coverage -->
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.6</version>
+				<executions>
+					<execution>
+						<id>pre-unit-test</id>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>post-unit-test</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<!-- mutation coverage -->
+			<plugin>
+				<groupId>org.pitest</groupId>
+				<artifactId>pitest-maven</artifactId>
+				<version>1.7.4</version>
+
+				<dependencies>
+					<dependency>
+						<groupId>org.pitest</groupId>
+						<artifactId>pitest-junit5-plugin</artifactId>
+						<version>0.15</version>
+					</dependency>
+				</dependencies>
+			</plugin>
+		</plugins>
+	</build>
+
+	<profiles>
+		<!-- [ dev profile ] -->
+		<profile>
+			<id>dev</id>
+			<properties>
+				<activatedProperties>dev</activatedProperties>
+			</properties>
+			<activation>
+				<activeByDefault>true</activeByDefault>
+			</activation>
+			<dependencies>
+				<!-- spring live reload -->
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-devtools</artifactId>
+					<version>2.7.0</version>
+					<optional>true</optional>
+					<scope>runtime</scope>
+				</dependency>
+
+				<!-- application.properties autocomplete -->
+				<dependency>
+					<groupId>org.springframework.boot</groupId>
+					<artifactId>spring-boot-configuration-processor</artifactId>
+					<version>2.7.0</version>
+					<optional>true</optional>
+				</dependency>
+			</dependencies>
+		</profile>
+
+		<!-- [ test profile ] -->
+		<profile>
+			<id>test</id>
+			<properties>
+				<activatedProperties>test</activatedProperties>
+			</properties>
+		</profile>
+
+		<!-- [ CI/CD profile ] -->
+		<profile>
+			<id>ci</id>
+			<properties>
+				<activatedProperties>ci</activatedProperties>
+			</properties>
+		</profile>
+
+		<!-- [ prod profile ] -->
+		<profile>
+			<id>prod</id>
+			<properties>
+				<activatedProperties>prod</activatedProperties>
+			</properties>
+		</profile>
+	</profiles>
+
+</project>

@@ -1,0 +1,29 @@
+{
+  "properties": [
+    {
+      "name": "application.data-population.enabled",
+      "type": "java.lang.Boolean",
+      "description": "Decide if data population step should be executed when starting the application."
+    },
+    {
+      "name": "jwt.secret",
+      "type": "java.lang.String",
+      "description": "Used to salt the JWT token."
+    },
+    {
+      "name": "jwt.accessToken.expiration",
+      "type": "java.lang.Long",
+      "description": "Set the JWT access token duration in milliseconds."
+    },
+    {
+      "name": "jwt.refreshToken.expiration",
+      "type": "java.lang.Long",
+      "description": "Set the JWT refresh token duration in milliseconds.."
+    },
+    {
+      "name": "jwt.issuer",
+      "type": "java.lang.String",
+      "description": "Set the JWT issuer name."
+    }
+  ]
+}
