@@ -37,36 +37,32 @@ public class JwtTokenUtil {
                 .compact();
     }
 
-    public String getUserId(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-
-        return claims.getSubject().split(",")[0];
+    public Long getUserId(String token) {
+        Claims claims = parseJWTClaims(token).getBody();
+        String id = claims.getSubject().split(",")[0];
+        return Long.parseLong(id);
     }
 
     public String getUsername(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-
+        Claims claims = parseJWTClaims(token).getBody();
         return claims.getSubject().split(",")[1];
     }
 
     public Date getExpirationDate(String token) {
-        Claims claims = Jwts.parser()
-                .setSigningKey(jwtSecret)
-                .parseClaimsJws(token)
-                .getBody();
-
+        Claims claims = parseJWTClaims(token).getBody();
         return claims.getExpiration();
+    }
+
+    private Jws<Claims> parseJWTClaims(String token) {
+        return Jwts.parser()
+                .setSigningKey(jwtSecret)
+                .setClock(jwtClock(clock))
+                .parseClaimsJws(token);
     }
 
     public boolean validateToken(String token) {
         try {
-            Jwts.parser().setSigningKey(jwtSecret).parseClaimsJws(token);
+            parseJWTClaims(token);
             return true;
         } catch (SignatureException ex) {
             log.error("Invalid JWT signature - {}", ex.getMessage());
@@ -80,6 +76,10 @@ public class JwtTokenUtil {
             log.error("JWT claims string is empty - {}", ex.getMessage());
         }
         return false;
+    }
+
+    private io.jsonwebtoken.Clock jwtClock(Clock clock) {
+        return () -> Date.from(clock.instant());
     }
 
 }
