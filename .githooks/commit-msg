@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+echo "Checking commit-message format..."
+
+## the first arg is the path to the git commit temporary file
+TEMPORARY_FILE_PATH=$1
+
+## get commit-message from the temporary file
+COMMIT_MSG=$(head -n1 "$TEMPORARY_FILE_PATH")
+
+## init regex to match commit-message format
+REGEX="^(build|chore|ci|docs|feat|fix|perf|refactor|revert|style|test)(\(([a-z]+)\))?\!?\:( .+)+$"
+
+## checking commit-message format
+if ! [[ $COMMIT_MSG =~ $REGEX ]];then
+    echo -e ">\tinput: \"$COMMIT_MSG\""
+    echo -e "⨯\tcommit message must have format 'type(scope?): subject'"
+    echo -e "⨯\ttype must be one of: [build, chore, ci, docs, feat, fix, perf, refactor, revert, style, test]"
+    echo -e "⨯\tscope must be lowercase"
+    echo -e "⨯\n⨯\tExamples:\n⨯\t  fix: some message\n⨯\t  fix(scope): some message\n⨯\t  fix!: some message\n⨯\t  fix(scope)!: some message"
+
+    exit 1
+else
+    echo -e "✓\t0 errors and 0 warnings"
+    exit 0
+fi
