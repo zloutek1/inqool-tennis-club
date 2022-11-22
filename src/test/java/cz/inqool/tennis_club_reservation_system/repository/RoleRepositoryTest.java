@@ -1,8 +1,10 @@
 package cz.inqool.tennis_club_reservation_system.repository;
 
+import cz.inqool.tennis_club_reservation_system.FixedTimeConfiguration;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.orm.jpa.DataJpaTest;
+import org.springframework.context.annotation.Import;
 import org.springframework.test.annotation.DirtiesContext;
 
 import javax.persistence.EntityManager;
@@ -12,6 +14,7 @@ import static cz.inqool.tennis_club_reservation_system.model.factory.RoleFactory
 import static org.assertj.core.api.Assertions.assertThat;
 
 @DataJpaTest
+@Import(FixedTimeConfiguration.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class RoleRepositoryTest {
 

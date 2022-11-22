@@ -129,7 +129,7 @@ public class RefreshTokenServiceTest {
         var actual = refreshTokenService.verifyTokenExpirationForUser(1L);
 
         assertThat(actual).isFalse();
-        verify(refreshTokenRepository).deleteById(1L);
+        verify(refreshTokenRepository).softDeleteById(1L);
     }
 
     @Test

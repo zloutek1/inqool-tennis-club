@@ -5,13 +5,14 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import java.time.Clock;
 import java.util.Optional;
 
 @Repository
 public class RoleRepositoryImpl extends CrudRepositoryImpl<Role, Long> implements RoleRepository {
 
-    public RoleRepositoryImpl(EntityManager entityManager) {
-        super(entityManager, Role.class);
+    public RoleRepositoryImpl(EntityManager entityManager, Clock clock) {
+        super(entityManager, clock, Role.class);
     }
 
     public Optional<Role> findByName(String name) {

@@ -67,7 +67,7 @@ public class RefreshTokenService {
         );
 
         refreshTokenRepository.findByUser(user)
-                .ifPresent(token -> refreshTokenRepository.deleteById(token.getId()));
+                .ifPresent(token -> refreshTokenRepository.softDeleteById(token.getId()));
         entityManager.flush();
 
         refreshToken = refreshTokenRepository.save(refreshToken);
@@ -86,7 +86,7 @@ public class RefreshTokenService {
                 .orElseThrow(() -> new NotFoundException("Refresh token with user with id " + userId + " not found"));
 
         if (token.getExpiryDate().compareTo(Instant.now(clock)) < 0) {
-            refreshTokenRepository.deleteById(token.getId());
+            refreshTokenRepository.softDeleteById(token.getId());
             return false;
         }
         return true;

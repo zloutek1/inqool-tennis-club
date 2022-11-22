@@ -5,12 +5,13 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import java.time.Clock;
 import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl extends CrudRepositoryImpl<User, Long> implements UserRepository {
-    public UserRepositoryImpl(EntityManager entityManager) {
-        super(entityManager, User.class);
+    public UserRepositoryImpl(EntityManager entityManager, Clock clock) {
+        super(entityManager, clock, User.class);
     }
 
     @Override

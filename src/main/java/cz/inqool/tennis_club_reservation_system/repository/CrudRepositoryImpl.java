@@ -7,23 +7,31 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 
 import javax.persistence.EntityManager;
+import javax.persistence.NoResultException;
+import java.time.Clock;
+import java.time.LocalDateTime;
 import java.util.Optional;
 
 public abstract class CrudRepositoryImpl<T extends BaseEntity, ID> implements CrudRepository<T, ID> {
     private final Class<T> clazz;
     protected final EntityManager entityManager;
+    private final Clock clock;
 
-    public CrudRepositoryImpl(EntityManager entityManager, Class<T> clazz) {
+    public CrudRepositoryImpl(EntityManager entityManager, Clock clock, Class<T> clazz) {
         this.entityManager = entityManager;
         this.clazz = clazz;
+        this.clock = clock;
     }
 
     @Override
     public Page<T> findAll(Pageable pageable) {
         var cb = entityManager.getCriteriaBuilder();
-
         var cq = cb.createQuery(clazz);
-        var query = entityManager.createQuery(cq.select(cq.from(clazz)));
+
+        var entity = cq.from(clazz);
+        cq.where(cb.isNull(entity.get("deletedAt")));
+
+        var query = entityManager.createQuery(cq);
 
         query.setFirstResult(pageable.getPageNumber() * pageable.getPageSize());
         query.setMaxResults(pageable.getPageSize());
@@ -33,8 +41,19 @@ public abstract class CrudRepositoryImpl<T extends BaseEntity, ID> implements Cr
 
     @Override
     public Optional<T> findById(ID id) {
-        T foundEntity = entityManager.find(clazz, id);
-        return Optional.ofNullable(foundEntity);
+        var cb = entityManager.getCriteriaBuilder();
+        var cq = cb.createQuery(clazz);
+
+        var entity = cq.from(clazz);
+        cq.where(cb.equal(entity.get("id"), id), cb.isNull(entity.get("deletedAt")));
+
+        var query = entityManager.createQuery(cq);
+
+        try {
+            return Optional.of(query.getSingleResult());
+        } catch (NoResultException ex) {
+            return Optional.empty();
+        }
     }
 
     @Override
@@ -50,8 +69,19 @@ public abstract class CrudRepositoryImpl<T extends BaseEntity, ID> implements Cr
     }
 
     @Override
-    public void deleteById(ID id) {
-        T foundEntity = entityManager.find(clazz, id);
-        entityManager.remove(foundEntity);
+    public void softDeleteById(ID id) {
+        if (findById(id).isEmpty()) {
+            throw new NoResultException("Entity with id " + id + " not found");
+        }
+
+        var cb = entityManager.getCriteriaBuilder();
+
+        var update = cb.createCriteriaUpdate(clazz);
+        var entity = update.from(clazz);
+
+        update.set("deletedAt", LocalDateTime.now(clock));
+        update.where(cb.equal(entity.get("id"), id));
+
+        entityManager.createQuery(update).executeUpdate();
     }
 }

@@ -6,13 +6,14 @@ import org.springframework.stereotype.Repository;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import java.time.Clock;
 import java.util.Optional;
 
 @Repository
 public class RefreshTokenRepositoryImpl extends CrudRepositoryImpl<RefreshToken, Long> implements RefreshTokenRepository {
 
-    public RefreshTokenRepositoryImpl(EntityManager entityManager) {
-        super(entityManager, RefreshToken.class);
+    public RefreshTokenRepositoryImpl(EntityManager entityManager, Clock clock) {
+        super(entityManager, clock, RefreshToken.class);
     }
 
     public Optional<RefreshToken> findByUser(User user) {

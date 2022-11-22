@@ -17,8 +17,8 @@ import static cz.inqool.tennis_club_reservation_system.model.factory.RefreshToke
 import static cz.inqool.tennis_club_reservation_system.model.factory.UserFactory.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 
-@Import(FixedTimeConfiguration.class)
 @DataJpaTest
+@Import(FixedTimeConfiguration.class)
 @DirtiesContext(classMode = DirtiesContext.ClassMode.AFTER_EACH_TEST_METHOD)
 public class RefreshTokenRepositoryTest {
 

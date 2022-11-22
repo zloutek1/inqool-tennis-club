@@ -67,7 +67,7 @@ public class UserService implements UserDetailsService {
         log.info("Deleting user with id {}", id);
         var user = tryToFindUser(id);
 
-        userRepository.deleteById(id);
+        userRepository.softDeleteById(id);
         return beanMappingService.mapTo(user, UserDto.class);
     }
 

@@ -113,7 +113,7 @@ public class UserServiceTest {
 
         UserDto actual = userService.deleteUser(1L);
 
-        verify(userRepository).deleteById(1L);
+        verify(userRepository).softDeleteById(1L);
         assertThat(actual).isEqualTo(expected);
     }
 

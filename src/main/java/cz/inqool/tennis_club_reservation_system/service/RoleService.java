@@ -46,7 +46,7 @@ public class RoleService {
         log.info("Deleting role with id {}", id);
         var role = tryToFindRole(id);
 
-        roleRepository.deleteById(id);
+        roleRepository.softDeleteById(id);
         return beanMappingService.mapTo(role, RoleDto.class);
     }
 

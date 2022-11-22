@@ -18,6 +18,6 @@ public interface CrudRepository<T, ID> extends Repository<T, ID> {
 
     <S extends T> S update(S entity);
 
-    void deleteById(ID id);
+    void softDeleteById(ID id);
 
 }

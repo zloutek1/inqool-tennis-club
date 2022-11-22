@@ -95,7 +95,7 @@ public class RoleServiceTest {
 
         RoleDto actual = roleService.deleteRole(1L);
 
-        verify(roleRepository).deleteById(1L);
+        verify(roleRepository).softDeleteById(1L);
         assertThat(actual).isEqualTo(expected);
     }
 
