@@ -1,10 +1,10 @@
 package cz.inqool.tennis_club_reservation_system.service;
 
-import cz.inqool.tennis_club_reservation_system.model.Role;
-import cz.inqool.tennis_club_reservation_system.repository.RoleRepository;
 import cz.inqool.tennis_club_reservation_system.dto.RoleCreateDto;
 import cz.inqool.tennis_club_reservation_system.dto.RoleDto;
 import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
+import cz.inqool.tennis_club_reservation_system.model.Role;
+import cz.inqool.tennis_club_reservation_system.repository.RoleRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -2,7 +2,7 @@ package cz.inqool.tennis_club_reservation_system.service;
 
 import cz.inqool.tennis_club_reservation_system.exceptions.ServiceException;
 import cz.inqool.tennis_club_reservation_system.model.Role;
-import cz.inqool.tennis_club_reservation_system.repository.RoleRepository;
+import cz.inqool.tennis_club_reservation_system.repository.RoleRepositoryImpl;
 import cz.inqool.tennis_club_reservation_system.dto.RoleCreateDto;
 import cz.inqool.tennis_club_reservation_system.dto.RoleDto;
 import cz.inqool.tennis_club_reservation_system.model.factory.RoleFactory;
@@ -25,7 +25,7 @@ import static org.mockito.Mockito.*;
 public class RoleServiceTest {
 
     @MockBean
-    private RoleRepository roleRepository;
+    private RoleRepositoryImpl roleRepository;
 
     @Autowired
     private RoleService roleService;

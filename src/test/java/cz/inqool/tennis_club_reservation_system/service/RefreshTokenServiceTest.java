@@ -4,8 +4,8 @@ import cz.inqool.tennis_club_reservation_system.FixedTimeConfiguration;
 import cz.inqool.tennis_club_reservation_system.dto.RefreshTokenDto;
 import cz.inqool.tennis_club_reservation_system.exceptions.ServiceException;
 import cz.inqool.tennis_club_reservation_system.model.RefreshToken;
-import cz.inqool.tennis_club_reservation_system.repository.RefreshTokenRepository;
-import cz.inqool.tennis_club_reservation_system.repository.UserRepository;
+import cz.inqool.tennis_club_reservation_system.repository.RefreshTokenRepositoryImpl;
+import cz.inqool.tennis_club_reservation_system.repository.UserRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -34,10 +34,10 @@ public class RefreshTokenServiceTest {
     private RefreshTokenService refreshTokenService;
 
     @MockBean
-    private RefreshTokenRepository refreshTokenRepository;
+    private RefreshTokenRepositoryImpl refreshTokenRepository;
 
     @MockBean
-    private UserRepository userRepository;
+    private UserRepositoryImpl userRepository;
 
     @MockBean
     private Supplier<UUID> uuidSupplier;

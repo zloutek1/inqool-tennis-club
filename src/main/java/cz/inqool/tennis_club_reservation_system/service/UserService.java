@@ -1,13 +1,13 @@
 package cz.inqool.tennis_club_reservation_system.service;
 
-import cz.inqool.tennis_club_reservation_system.model.Role;
-import cz.inqool.tennis_club_reservation_system.model.User;
-import cz.inqool.tennis_club_reservation_system.repository.RoleRepository;
-import cz.inqool.tennis_club_reservation_system.repository.UserRepository;
 import cz.inqool.tennis_club_reservation_system.dto.UserCreateDto;
 import cz.inqool.tennis_club_reservation_system.dto.UserDto;
 import cz.inqool.tennis_club_reservation_system.dto.UserEditDto;
 import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
+import cz.inqool.tennis_club_reservation_system.model.Role;
+import cz.inqool.tennis_club_reservation_system.model.User;
+import cz.inqool.tennis_club_reservation_system.repository.RoleRepository;
+import cz.inqool.tennis_club_reservation_system.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

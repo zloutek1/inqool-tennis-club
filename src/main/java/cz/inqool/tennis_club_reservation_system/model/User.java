@@ -14,14 +14,9 @@ import java.util.Set;
 
 @Entity
 @Table(name = "users")
-
 @Getter @Setter @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED, onConstructor_ = @PersistenceCreator)
-public class User implements UserDetails {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+public class User extends BaseEntity implements UserDetails {
 
     @NonNull
     @Column(nullable = false)
@@ -79,7 +74,7 @@ public class User implements UserDetails {
 
     @Override
     public boolean isEnabled() {
-        return true;
+        return deletedAt == null;
     }
 
     @Override

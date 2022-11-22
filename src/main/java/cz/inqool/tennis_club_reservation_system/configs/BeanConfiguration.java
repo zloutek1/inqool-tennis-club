@@ -27,5 +27,4 @@ public class BeanConfiguration {
     public Supplier<UUID> uuidSupplier() {
         return UUID::randomUUID;
     }
-
 }

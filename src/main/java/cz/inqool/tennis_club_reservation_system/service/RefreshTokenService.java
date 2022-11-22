@@ -2,13 +2,13 @@ package cz.inqool.tennis_club_reservation_system.service;
 
 import cz.inqool.tennis_club_reservation_system.dto.AuthResponseDto;
 import cz.inqool.tennis_club_reservation_system.dto.RefreshTokenDto;
-import cz.inqool.tennis_club_reservation_system.repository.RefreshTokenRepository;
+import cz.inqool.tennis_club_reservation_system.dto.UserDto;
 import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
 import cz.inqool.tennis_club_reservation_system.exceptions.RefreshTokenExpiredException;
 import cz.inqool.tennis_club_reservation_system.model.RefreshToken;
 import cz.inqool.tennis_club_reservation_system.model.User;
+import cz.inqool.tennis_club_reservation_system.repository.RefreshTokenRepository;
 import cz.inqool.tennis_club_reservation_system.repository.UserRepository;
-import cz.inqool.tennis_club_reservation_system.dto.UserDto;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;

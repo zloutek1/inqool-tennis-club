@@ -1,6 +1,6 @@
 package cz.inqool.tennis_club_reservation_system.service;
 
-import cz.inqool.tennis_club_reservation_system.repository.UserRepository;
+import cz.inqool.tennis_club_reservation_system.repository.UserRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -21,7 +21,7 @@ import static org.mockito.Mockito.when;
 public class UserDetailsServiceTest {
 
     @MockBean
-    private UserRepository userRepository;
+    private UserRepositoryImpl userRepository;
 
     @Autowired
     private UserDetailsService userDetailsService;

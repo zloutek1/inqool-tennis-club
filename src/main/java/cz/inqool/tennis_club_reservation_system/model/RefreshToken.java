@@ -1,25 +1,17 @@
 package cz.inqool.tennis_club_reservation_system.model;
 
 import lombok.*;
-import org.hibernate.annotations.Where;
 import org.springframework.data.annotation.PersistenceCreator;
 
 import javax.persistence.*;
 import java.time.Instant;
 import java.util.Objects;
 
-import static cz.inqool.tennis_club_reservation_system.model.BaseEntity.SOFT_DELETED_CLAUSE;
-
 @Entity
 @Table(name = "refresh_tokens")
-@Where(clause = SOFT_DELETED_CLAUSE)
 @Getter @Setter @ToString(callSuper = true)
 @NoArgsConstructor(access = AccessLevel.PROTECTED, onConstructor_ = @PersistenceCreator)
-public class RefreshToken {
-
-    @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
-    private Long id;
+public class RefreshToken extends BaseEntity {
 
     @NonNull
     @OneToOne(optional = false)
