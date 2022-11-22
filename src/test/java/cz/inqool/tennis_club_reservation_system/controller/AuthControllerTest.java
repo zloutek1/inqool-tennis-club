@@ -1,78 +1,67 @@
 package cz.inqool.tennis_club_reservation_system.controller;
 
-import cz.inqool.tennis_club_reservation_system.InMemoryUserDetailsConfiguration;
-import cz.inqool.tennis_club_reservation_system.service.JwtTokenService;
-import cz.inqool.tennis_club_reservation_system.dto.RefreshTokenDto;
-import cz.inqool.tennis_club_reservation_system.service.RefreshTokenService;
 import cz.inqool.tennis_club_reservation_system.dto.AuthRequestDto;
 import cz.inqool.tennis_club_reservation_system.dto.AuthResponseDto;
 import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
 import cz.inqool.tennis_club_reservation_system.exceptions.RefreshTokenExpiredException;
+import cz.inqool.tennis_club_reservation_system.service.AuthService;
+import cz.inqool.tennis_club_reservation_system.service.RefreshTokenService;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.context.annotation.Import;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
-import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
-import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.Authentication;
 import org.springframework.security.test.context.support.WithMockUser;
-import org.springframework.security.test.context.support.WithUserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 
-import java.time.Instant;
-
 import static cz.inqool.tennis_club_reservation_system.TestUtils.convertToJson;
-import static cz.inqool.tennis_club_reservation_system.model.factory.UserFactory.createUser;
 import static cz.inqool.tennis_club_reservation_system.model.factory.UserFactory.createUserDto;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyString;
-import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Import(InMemoryUserDetailsConfiguration.class)
 public class AuthControllerTest {
 
     @Autowired
     private MockMvc mockMvc;
 
     @MockBean
-    private AuthenticationManager authenticationManager;
+    private AuthService authService;
 
     @MockBean
     private RefreshTokenService refreshTokenService;
-
-    @MockBean
-    private JwtTokenService jwtTokenService;
 
     // username kayle48
     private final String accessToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJrYXlsZTQ4IiwiZXhwIjoxNjM0MDg0MjU3LCJpYXQiOjE2MzQwODA2NTd9.1jZrgQXgpLYGqWBzO5BpXBo8veCfpiUyKWaxg-Ltxy4RDX-w4dNaFOZQSwTI1ykUu46zPOMoGI5ap1xdj3Skug";
     private final String refreshToken = "f22b476d-640e-4113-a6c6-ccce1bab91f1";
 
     @Test
+    public void loginUser_withInvalidCredentials_returnsBadRequest() throws Exception {
+        var authRequest = new AuthRequestDto("invalid","pa55");
+
+        when(authService.loginUser(authRequest))
+                .thenThrow(new BadCredentialsException("Authentication error: Bad credentials"));
+
+        mockMvc.perform(post("/api/v1/auth/login")
+                        .content(convertToJson(authRequest))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isUnauthorized())
+                .andExpect(content().string("Authentication error: Bad credentials"));
+    }
+
+    @Test
     public void loginUser_withExistingCredentials_returnsJwtToken() throws Exception {
         var authRequest = new AuthRequestDto("kayle48", "pa55");
-        var user = createUser(1L, "kayle48", "pa55");
         var userDto = createUserDto(1L, "kayle48");
-        var refreshTokenDto = new RefreshTokenDto(2L, userDto, refreshToken, Instant.ofEpochMilli(2));
 
-        var authentication = mock(Authentication.class);
-        when(authentication.getPrincipal()).thenReturn(user);
-
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenReturn(authentication);
-        when(jwtTokenService.generateAccessToken(userDto))
-                .thenReturn(accessToken);
-        when(refreshTokenService.generateRefreshTokenForUser(1L))
-                .thenReturn(refreshTokenDto);
+        when(authService.loginUser(authRequest))
+                .thenReturn(new AuthResponseDto(accessToken, refreshToken, userDto));
 
         mockMvc.perform(post("/api/v1/auth/login")
                         .content(convertToJson(authRequest))
@@ -80,21 +69,6 @@ public class AuthControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.accessToken").value(accessToken))
                 .andExpect(jsonPath("$.refreshToken").value(refreshToken));
-    }
-
-    @Test
-    public void loginUser_withInvalidCredentials_returnsBadRequest() throws Exception {
-        var credentials = new AuthRequestDto("invalid","pa55");
-        String json = convertToJson(credentials);
-
-        when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-                .thenThrow(new BadCredentialsException("Authentication error: Bad credentials"));
-
-        mockMvc.perform(post("/api/v1/auth/login")
-                        .content(json)
-                        .contentType(MediaType.APPLICATION_JSON))
-                .andExpect(status().isUnauthorized())
-                .andExpect(content().string("Authentication error: Bad credentials"));
     }
 
     @Test
@@ -116,7 +90,7 @@ public class AuthControllerTest {
     }
 
     @Test
-    @WithUserDetails("kayle48")
+    @WithMockUser(username="spring")
     public void regenerateAccessToken_givenValidAccessToken_returnsNewJwt() throws Exception {
         var userDto = createUserDto(2L, "kayle48");
         var authResponse = new AuthResponseDto(accessToken, refreshToken, userDto);
