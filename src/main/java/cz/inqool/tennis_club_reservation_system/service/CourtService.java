@@ -9,10 +9,12 @@ import cz.inqool.tennis_club_reservation_system.repository.CourtRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Slf4j
 @Service
+@Transactional
 public class CourtService extends CrudService<Court, Long, CourtDto, CourtCreateDto, CourtDto> {
 
     private final CourtRepository courtRepository;
