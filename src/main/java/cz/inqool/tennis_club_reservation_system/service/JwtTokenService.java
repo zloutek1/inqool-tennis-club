@@ -29,7 +29,7 @@ public class JwtTokenService {
 
     public String generateAccessToken(UserDto userDto) {
         return Jwts.builder()
-                .setSubject(String.format("%s,%s", userDto.getId(), userDto.getUsername()))
+                .setSubject(String.format("%s,%s,%s", userDto.getId(), userDto.getPhoneNumber(), userDto.getUsername()))
                 .setIssuer(jwtIssuer)
                 .setIssuedAt(Date.from(Instant.now(clock)))
                 .setExpiration(Date.from(Instant.now(clock).plusMillis(jwtTokenDuration)))
@@ -46,6 +46,11 @@ public class JwtTokenService {
     public String getPhoneNumber(String token) {
         Claims claims = parseJWTClaims(token).getBody();
         return claims.getSubject().split(",")[1];
+    }
+
+    public String getUsername(String token) {
+        Claims claims = parseJWTClaims(token).getBody();
+        return claims.getSubject().split(",")[2];
     }
 
     public Date getExpirationDate(String token) {
