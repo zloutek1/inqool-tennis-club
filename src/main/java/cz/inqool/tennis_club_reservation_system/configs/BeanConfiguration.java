@@ -1,5 +1,6 @@
 package cz.inqool.tennis_club_reservation_system.configs;
 
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
 import cz.inqool.tennis_club_reservation_system.service.DataPopulationService;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
@@ -49,5 +50,10 @@ public class BeanConfiguration {
     @Bean
     public LocalValidatorFactoryBean validator() {
         return new LocalValidatorFactoryBean();
+    }
+
+    @Bean
+    public PhoneNumberUtil phoneNumberUtil() {
+        return PhoneNumberUtil.getInstance();
     }
 }

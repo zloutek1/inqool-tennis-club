@@ -108,6 +108,13 @@
 			<version>1.9.4</version>
 		</dependency>
 
+		<!-- phone number validator -->
+		<dependency>
+			<groupId>com.googlecode.libphonenumber</groupId>
+			<artifactId>libphonenumber</artifactId>
+			<version>8.12.10</version>
+		</dependency>
+
 		<!--
 		 - - - - - - - - - - - - - [[ Documentation ]] - - - - - - - - - - - - -
 		 -->

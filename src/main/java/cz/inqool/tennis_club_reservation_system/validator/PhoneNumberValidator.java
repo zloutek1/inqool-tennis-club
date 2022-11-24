@@ -1,18 +1,31 @@
 package cz.inqool.tennis_club_reservation_system.validator;
 
+import com.google.i18n.phonenumbers.NumberParseException;
+import com.google.i18n.phonenumbers.PhoneNumberUtil;
+import com.google.i18n.phonenumbers.Phonenumber;
+import org.springframework.beans.factory.annotation.Autowired;
+
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
 public class PhoneNumberValidator implements ConstraintValidator<PhoneNumber, String> {
 
-    private static final String PATTERNS
-            = "^(\\+\\d{1,3}( )?)?((\\(\\d{3}\\))|\\d{3})[- .]?\\d{3}[- .]?\\d{4}$"
-            + "|^(\\+\\d{1,3}( )?)?(\\d{3} ?){2}\\d{3}$"
-            + "|^(\\+\\d{1,3}( )?)?(\\d{3} ?)(\\d{2} ?){2}\\d{2}$";
+    @Autowired
+    private final PhoneNumberUtil phoneNumberUtil;
+
+    public PhoneNumberValidator(PhoneNumberUtil phoneNumberUtil) {
+        this.phoneNumberUtil = phoneNumberUtil;
+    }
 
     @Override
     public boolean isValid(String phoneNumber, ConstraintValidatorContext context) {
-        return phoneNumber.matches(PATTERNS);
+        try {
+            var countryCode = Phonenumber.PhoneNumber.CountryCodeSource.UNSPECIFIED.name();
+            var phone = phoneNumberUtil.parse(phoneNumber, countryCode);
+            return phoneNumberUtil.isValidNumber(phone);
+        } catch (NumberParseException e) {
+            return false;
+        }
     }
 
 }
