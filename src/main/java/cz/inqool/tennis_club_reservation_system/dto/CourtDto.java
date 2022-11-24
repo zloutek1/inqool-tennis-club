@@ -15,6 +15,6 @@ public class CourtDto implements EntityDto<Long> {
 
     @NotNull private int number;
 
-    @NotNull private TerrainDto terrainDto;
+    @NotNull private TerrainDto terrain;
 
 }

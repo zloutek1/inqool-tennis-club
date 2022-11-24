@@ -2,6 +2,7 @@ package cz.inqool.tennis_club_reservation_system.controller;
 
 import cz.inqool.tennis_club_reservation_system.dto.CourtDto;
 import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
+import cz.inqool.tennis_club_reservation_system.model.GameType;
 import cz.inqool.tennis_club_reservation_system.model.factory.CourtFactory;
 import cz.inqool.tennis_club_reservation_system.service.CourtService;
 import org.junit.jupiter.api.Test;
@@ -25,6 +26,7 @@ import java.util.stream.Stream;
 import static cz.inqool.tennis_club_reservation_system.TestUtils.convertToJson;
 import static cz.inqool.tennis_club_reservation_system.model.factory.CourtFactory.createCourtCreateDto;
 import static cz.inqool.tennis_club_reservation_system.model.factory.CourtFactory.createCourtDto;
+import static cz.inqool.tennis_club_reservation_system.model.factory.ReservationFactory.createReservationDto;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
@@ -130,6 +132,34 @@ public class CourtControllerTest {
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.number").value(5));
+    }
+
+    @Test
+    @WithMockUser(username="spring")
+    public void findAllCourtReservations_withInvalidCourtNumber_returnsNotFound() throws Exception {
+        when(courtService.findReservations(4))
+                .thenThrow(new NotFoundException("Court with number 4 not found"));
+
+        mockMvc.perform(get("/api/v1/court/4/reservations"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username="spring")
+    public void findAllCourtReservations_withValidCourtNumber_returnsReservations() throws Exception {
+        var reservations = List.of(
+                createReservationDto(2L, GameType.SINGLES),
+                createReservationDto(1L, GameType.DOUBLES)
+        );
+
+        when(courtService.findReservations(4))
+                .thenReturn(reservations);
+
+        mockMvc.perform(get("/api/v1/court/4/reservations"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value(2L))
+                .andExpect(jsonPath("$[0].gameType").value("SINGLES"));
     }
 
     @ParameterizedTest

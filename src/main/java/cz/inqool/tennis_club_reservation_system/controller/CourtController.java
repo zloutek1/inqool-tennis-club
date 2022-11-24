@@ -3,6 +3,7 @@ package cz.inqool.tennis_club_reservation_system.controller;
 import cz.inqool.tennis_club_reservation_system.configs.ApiUris;
 import cz.inqool.tennis_club_reservation_system.dto.CourtCreateDto;
 import cz.inqool.tennis_club_reservation_system.dto.CourtDto;
+import cz.inqool.tennis_club_reservation_system.dto.ReservationDto;
 import cz.inqool.tennis_club_reservation_system.service.CourtService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @Tag(name = "court")
@@ -47,6 +49,12 @@ public class CourtController {
     public ResponseEntity<Page<CourtDto>> findAllCourts(@ParameterObject Pageable pageable) {
         Page<CourtDto> courts = courtService.findAll(pageable);
         return ResponseEntity.ok(courts);
+    }
+
+    @GetMapping(ApiUris.COURT_RESERVATIONS)
+    public ResponseEntity<List<ReservationDto>> findCourtReservations(@PathVariable int number) {
+        List<ReservationDto> reservations = courtService.findReservations(number);
+        return ResponseEntity.ok(reservations);
     }
 
 }

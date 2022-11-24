@@ -3,12 +3,9 @@ package cz.inqool.tennis_club_reservation_system.model;
 import lombok.*;
 import org.springframework.data.annotation.PersistenceCreator;
 
-import javax.persistence.Entity;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
-import java.util.HashSet;
-import java.util.Set;
+import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "courts")
@@ -16,14 +13,16 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED, onConstructor_ = @PersistenceCreator)
 public class Court extends BaseEntity {
 
+    @Column(nullable = false, unique = true)
     private int number;
 
     @ManyToOne
     private Terrain terrain;
 
-    @ToString.Exclude
     @OneToMany
-    private Set<Reservation> reservations = new HashSet<>();
+    @ToString.Exclude
+    @OrderBy("createdAt")
+    private List<Reservation> reservations = new ArrayList<>();
 
     public Court(int number, Terrain terrain) {
         this.number = number;
