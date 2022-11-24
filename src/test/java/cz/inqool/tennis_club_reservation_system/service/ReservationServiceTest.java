@@ -1,6 +1,10 @@
 package cz.inqool.tennis_club_reservation_system.service;
 
+import cz.inqool.tennis_club_reservation_system.dto.UserCreateDto;
+import cz.inqool.tennis_club_reservation_system.dto.UserDto;
+import cz.inqool.tennis_club_reservation_system.model.User;
 import cz.inqool.tennis_club_reservation_system.repository.ReservationRepository;
+import cz.inqool.tennis_club_reservation_system.repository.UserRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -18,7 +22,7 @@ import static org.mockito.Mockito.*;
 class ReservationServiceTest {
 
     @MockBean
-    private UserService userService;
+    private UserRepositoryImpl userRepository;
 
     @MockBean
     private ReservationRepository reservationRepository;
@@ -26,51 +30,48 @@ class ReservationServiceTest {
     @Autowired
     private ReservationService reservationService;
 
+
+    private final User user = createUser(1L, "bob");
+    private final UserCreateDto userCreateDto = createUserCreateDto("bob");
+    private final UserDto userDto = createUserDto(1L, "bob");
+
     @Test
     void save_givenReservationWithNewUser_savesReservationAndUser() {
-        var userCreateDto = createUserCreateDto("bob");
         var reservationCreateDto = createReservationCreateDto(userCreateDto);
-
-        var user = createUser(1L, "bob");
         var savedReservation = createReservation(1L, user);
-
-        var userDto = createUserDto(1L, "bob");
         var expectedReservation = createReservationDto(1L, userDto);
+        var mockUser = mock(User.class);
 
-        when(userService.findUserByUsername("bob"))
+        when(userRepository.findByUsername("bob"))
                 .thenReturn(Optional.empty());
-        when(userService.save(any()))
-                .thenReturn(userDto);
+        when(userRepository.save(any()))
+                .thenReturn(mockUser);
         when(reservationRepository.save(any()))
                 .thenReturn(savedReservation);
 
         var actualReservation = reservationService.save(reservationCreateDto);
 
         assertThat(actualReservation).isEqualTo(expectedReservation);
-        verify(userService).save(userCreateDto);
-        verify(userService).addReservation("bob", 1L);
+        verify(userRepository).save(user);
+        verify(mockUser).addReservation(savedReservation);
     }
 
     @Test
     void save_givenReservationWithExistingUser_savesReservation() {
-        var userCreateDto = createUserCreateDto("bob");
         var reservationCreateDto = createReservationCreateDto(userCreateDto);
-
-        var user = createUser(1L, "bob");
         var savedReservation = createReservation(1L, user);
-
-        var userDto = createUserDto(1L, "bob");
         var expectedReservation = createReservationDto(1L, userDto);
+        var mockUser= mock(User.class);
 
-        when(userService.findUserByUsername("bob"))
-                .thenReturn(Optional.of(userDto));
+        when(userRepository.findByUsername("bob"))
+                .thenReturn(Optional.of(mockUser));
         when(reservationRepository.save(any()))
                 .thenReturn(savedReservation);
 
         var actualReservation = reservationService.save(reservationCreateDto);
 
         assertThat(actualReservation).isEqualTo(expectedReservation);
-        verify(userService, never()).save(userCreateDto);
-        verify(userService).addReservation("bob", 1L);
+        verify(userRepository, never()).save(user);
+        verify(mockUser).addReservation(savedReservation);
     }
 }
