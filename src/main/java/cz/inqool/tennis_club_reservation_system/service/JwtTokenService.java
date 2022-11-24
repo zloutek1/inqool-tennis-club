@@ -43,7 +43,7 @@ public class JwtTokenService {
         return Long.parseLong(id);
     }
 
-    public String getUsername(String token) {
+    public String getPhoneNumber(String token) {
         Claims claims = parseJWTClaims(token).getBody();
         return claims.getSubject().split(",")[1];
     }
