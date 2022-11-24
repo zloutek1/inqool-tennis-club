@@ -8,6 +8,7 @@ import cz.inqool.tennis_club_reservation_system.model.Reservation;
 import cz.inqool.tennis_club_reservation_system.model.Role;
 import cz.inqool.tennis_club_reservation_system.model.User;
 import cz.inqool.tennis_club_reservation_system.model.factory.UserFactory;
+import cz.inqool.tennis_club_reservation_system.repository.ReservationRepository;
 import cz.inqool.tennis_club_reservation_system.repository.RoleRepositoryImpl;
 import cz.inqool.tennis_club_reservation_system.repository.UserRepositoryImpl;
 import org.junit.jupiter.api.Test;
@@ -40,6 +41,9 @@ public class UserServiceTest {
 
     @MockBean
     private RoleRepositoryImpl roleRepository;
+
+    @MockBean
+    private ReservationRepository reservationRepository;
 
     @MockBean
     private PasswordEncoder passwordEncoder;
@@ -256,6 +260,84 @@ public class UserServiceTest {
         assertThatExceptionOfType(ServiceException.class)
                 .isThrownBy(() -> userService.removeRole("bob3", "invalid"))
                 .withMessage("Role with name invalid not found");
+    }
+
+    @Test
+    public void addReservation_givenValidReservation_adds() {
+        var user = mock(User.class);
+        var reservation = mock(Reservation.class);
+
+        when(userRepository.findByUsername(anyString()))
+                .thenReturn(Optional.of(user));
+        when(reservationRepository.findById(anyLong()))
+                .thenReturn(Optional.of(reservation));
+
+        userService.addReservation("bob3", 1L);
+
+        verify(user).addReservation(reservation);
+    }
+
+    @Test
+    public void addReservation_givenInvalidUsername_throws() {
+        when(userRepository.findByUsername(anyString()))
+                .thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(ServiceException.class)
+                .isThrownBy(() -> userService.addReservation("invalid", 1L))
+                .withMessage("User with username invalid not found");
+    }
+
+    @Test
+    public void addReservation_givenInvalidReservation_throws() {
+        var user = mock(User.class);
+
+        when(userRepository.findByUsername(anyString()))
+                .thenReturn(Optional.of(user));
+        when(reservationRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(ServiceException.class)
+                .isThrownBy(() -> userService.addReservation("bob3", 999L))
+                .withMessage("Reservation with id 999 not found");
+    }
+
+    @Test
+    public void removeReservation_givenValidReservation_removes() {
+        var user = mock(User.class);
+        var reservation = mock(Reservation.class);
+
+        when(userRepository.findByUsername(anyString()))
+                .thenReturn(Optional.of(user));
+        when(reservationRepository.findById(anyLong()))
+                .thenReturn(Optional.of(reservation));
+
+        userService.removeReservation("bob3", 1L);
+
+        verify(user).removeReservation(reservation);
+    }
+
+    @Test
+    public void removeReservation_givenInvalidUsername_throws() {
+        when(userRepository.findByUsername(anyString()))
+                .thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(ServiceException.class)
+                .isThrownBy(() -> userService.removeReservation("invalid", 1L))
+                .withMessage("User with username invalid not found");
+    }
+
+    @Test
+    public void removeReservation_givenInvalidReservation_throws() {
+        var user = mock(User.class);
+
+        when(userRepository.findByUsername(anyString()))
+                .thenReturn(Optional.of(user));
+        when(reservationRepository.findById(anyLong()))
+                .thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(ServiceException.class)
+                .isThrownBy(() -> userService.removeReservation("bob3",  999L))
+                .withMessage("Reservation with id 999 not found");
     }
 
     @Test

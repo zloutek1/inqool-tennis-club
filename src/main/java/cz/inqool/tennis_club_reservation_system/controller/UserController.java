@@ -24,24 +24,26 @@ import java.util.List;
 @Tag(name = "user")
 @RequestMapping(ApiUris.ROOT_URI)
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('ADMIN')")
 public class UserController {
 
     private final UserService userService;
 
     @PutMapping(ApiUris.USER_NEW)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserDto> newUser(@Valid @RequestBody UserCreateDto userCreateDto) {
         UserDto savedUser = userService.save(userCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
     @PutMapping(ApiUris.USER_EDIT)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserDto> editUser(@Valid @RequestBody UserEditDto userEditDto) {
         UserDto editedUser = userService.edit(userEditDto);
         return ResponseEntity.ok(editedUser);
     }
 
     @DeleteMapping(ApiUris.USER_DELETE)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<UserDto> deleteUser(@PathVariable Long id) {
         UserDto deletedUser = userService.deleteById(id);
         return ResponseEntity.ok(deletedUser);
@@ -77,12 +79,14 @@ public class UserController {
     }
 
     @PostMapping(ApiUris.USER_ROLE_ADD)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> addRole(@PathVariable String username, @PathVariable String roleName) {
         userService.addRole(username, roleName);
         return ResponseEntity.ok("Role with name " + roleName + " added successfully");
     }
 
     @PostMapping(ApiUris.USER_ROLE_REMOVE)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<String> removeRole(@PathVariable String username, @PathVariable String roleName) {
         userService.removeRole(username, roleName);
         return ResponseEntity.ok("Role with name " + roleName + " removed successfully");

@@ -1,9 +1,9 @@
 package cz.inqool.tennis_club_reservation_system.controller;
 
-import cz.inqool.tennis_club_reservation_system.service.RoleService;
+import cz.inqool.tennis_club_reservation_system.configs.ApiUris;
 import cz.inqool.tennis_club_reservation_system.dto.RoleCreateDto;
 import cz.inqool.tennis_club_reservation_system.dto.RoleDto;
-import cz.inqool.tennis_club_reservation_system.configs.ApiUris;
+import cz.inqool.tennis_club_reservation_system.service.RoleService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.api.annotations.ParameterObject;
@@ -21,24 +21,26 @@ import javax.validation.Valid;
 @Tag(name = "role")
 @RequestMapping(ApiUris.ROOT_URI)
 @RequiredArgsConstructor
-@PreAuthorize("hasAuthority('ADMIN')")
 public class RoleController {
 
     private final RoleService roleService;
 
     @PutMapping(ApiUris.ROLE_NEW)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<RoleDto> newRole(@Valid @RequestBody RoleCreateDto roleDto) {
         RoleDto savedRole = roleService.save(roleDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRole);
     }
 
     @PutMapping(ApiUris.ROLE_EDIT)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<RoleDto> editRole(@Valid @RequestBody RoleDto roleDto) {
         RoleDto editedRole = roleService.edit(roleDto);
         return ResponseEntity.ok(editedRole);
     }
 
     @DeleteMapping(ApiUris.ROLE_DELETE)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<RoleDto> deleteUser(@PathVariable Long id) {
         RoleDto deletedRole = roleService.deleteById(id);
         return ResponseEntity.ok(deletedRole);

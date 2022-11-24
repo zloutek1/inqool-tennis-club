@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -35,12 +36,14 @@ public class ReservationController {
     }
 
     @PutMapping(ApiUris.RESERVATION_EDIT)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ReservationDto> editReservation(@Valid @RequestBody ReservationDto editDto) {
         ReservationDto editedReservation = reservationService.edit(editDto);
         return ResponseEntity.ok(editedReservation);
     }
 
     @DeleteMapping(ApiUris.RESERVATION_DELETE)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<ReservationDto> deleteReservation(@PathVariable Long id) {
         ReservationDto deletedReservation = reservationService.deleteById(id);
         return ResponseEntity.ok(deletedReservation);

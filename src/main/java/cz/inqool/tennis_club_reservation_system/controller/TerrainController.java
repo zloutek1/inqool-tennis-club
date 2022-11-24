@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -25,18 +26,21 @@ public class TerrainController {
     private final TerrainService terrainService;
 
     @PutMapping(ApiUris.TERRAIN_NEW)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<TerrainDto> newTerrain(@Valid @RequestBody TerrainCreateDto createDto) {
         TerrainDto savedTerrain = terrainService.save(createDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedTerrain);
     }
 
     @PutMapping(ApiUris.TERRAIN_EDIT)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<TerrainDto> editTerrain(@Valid @RequestBody TerrainDto editDto) {
         TerrainDto editedTerrain = terrainService.edit(editDto);
         return ResponseEntity.ok(editedTerrain);
     }
 
     @DeleteMapping(ApiUris.TERRAIN_DELETE)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<TerrainDto> deleteTerrain(@PathVariable Long id) {
         TerrainDto deletedTerrain = terrainService.deleteById(id);
         return ResponseEntity.ok(deletedTerrain);

@@ -314,19 +314,29 @@ public class UserControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
+    private static Stream<Arguments> protectedUrls() throws Exception {
+        return Stream.of(
+                Arguments.of(get("/api/v1/user/")),
+                Arguments.of(get("/api/v1/user/1")),
+                Arguments.of(get("/api/v1/user/kyle22")),
+                Arguments.of(put("/api/v1/user/new").content(convertToJson(createUserCreateDto("a"))).contentType(MediaType.APPLICATION_JSON)),
+                Arguments.of(put("/api/v1/user/edit").content(convertToJson(createUserEditDto(1L, "A"))).contentType(MediaType.APPLICATION_JSON)),
+                Arguments.of(delete("/api/v1/user/delete/1")),
+                Arguments.of(post("/api/v1/user/kayle22/role/ADMIN/add")),
+                Arguments.of(post("/api/v1/user/kayle22/role/ADMIN/remove"))
+        );
+    }
+
     @ParameterizedTest
-    @MethodSource("protectedUrls")
+    @MethodSource("authorizedUrls")
     @WithMockUser(username="spring", authorities = "USER")
     public void endpoint_withoutPermissions_returns403(RequestBuilder requestBuilder) throws Exception {
         mockMvc.perform(requestBuilder)
                 .andExpect(status().isForbidden());
     }
 
-    private static Stream<Arguments> protectedUrls() throws Exception {
+    private static Stream<Arguments> authorizedUrls() throws Exception {
         return Stream.of(
-                Arguments.of(get("/api/v1/user/")),
-                Arguments.of(get("/api/v1/user/1")),
-                Arguments.of(get("/api/v1/user/kyle22")),
                 Arguments.of(put("/api/v1/user/new").content(convertToJson(createUserCreateDto("a"))).contentType(MediaType.APPLICATION_JSON)),
                 Arguments.of(put("/api/v1/user/edit").content(convertToJson(createUserEditDto(1L, "A"))).contentType(MediaType.APPLICATION_JSON)),
                 Arguments.of(delete("/api/v1/user/delete/1")),

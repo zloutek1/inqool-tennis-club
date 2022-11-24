@@ -139,14 +139,6 @@ public class RoleControllerTest {
                 .andExpect(status().isUnauthorized());
     }
 
-    @ParameterizedTest
-    @MethodSource("protectedUrls")
-    @WithMockUser(username="spring", authorities = "USER")
-    public void endpoint_withoutPermissions_returns403(RequestBuilder requestBuilder) throws Exception {
-        mockMvc.perform(requestBuilder)
-                .andExpect(status().isForbidden());
-    }
-
     private static Stream<Arguments> protectedUrls() throws Exception {
         return Stream.of(
                 Arguments.of(get("/api/v1/role/")),
@@ -156,4 +148,19 @@ public class RoleControllerTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("authorizedUrls")
+    @WithMockUser(username="spring", authorities = "USER")
+    public void endpoint_withoutPermissions_returns403(RequestBuilder requestBuilder) throws Exception {
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isForbidden());
+    }
+
+    private static Stream<Arguments> authorizedUrls() throws Exception {
+        return Stream.of(
+                Arguments.of(put("/api/v1/role/new").content(convertToJson(createRoleCreateDto("a"))).contentType(MediaType.APPLICATION_JSON)),
+                Arguments.of(put("/api/v1/role/edit").content(convertToJson(createRoleDto(1L, "A"))).contentType(MediaType.APPLICATION_JSON)),
+                Arguments.of(delete("/api/v1/role/delete/1"))
+        );
+    }
 }

@@ -61,7 +61,7 @@ public class TerrainControllerTest {
     }
 
     @Test
-    @WithMockUser(username="spring")
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void newTerrain_withValidForm_shouldCreateAndReturnNewTerrain() throws Exception {
         var createDto = TerrainFactory.createTerrainCreateDto("wet");
         var createdTerrainDto = createTerrainDto(1L, "wet");
@@ -78,7 +78,7 @@ public class TerrainControllerTest {
     }
 
     @Test
-    @WithMockUser(username="spring")
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void editTerrain_withValidForm_shouldEditAndReturnEditedTerrain() throws Exception {
         var terrainDto = createTerrainDto(1L, "wet");
         var editedTerrain = createTerrainDto(1L, "wet");
@@ -95,7 +95,7 @@ public class TerrainControllerTest {
     }
 
     @Test
-    @WithMockUser(username="spring")
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void editTerrain_withInvalidForm_returnsNotFound() throws Exception {
         var terrainDto = createTerrainDto(999L, "wet");
 
@@ -109,7 +109,7 @@ public class TerrainControllerTest {
     }
 
     @Test
-    @WithMockUser(username="spring")
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void deleteTerrain_withInvalidId_returnsNotFound() throws Exception {
         when(terrainService.deleteById(999L))
                 .thenThrow(new NotFoundException("Terrain with id 999 not found"));
@@ -119,7 +119,7 @@ public class TerrainControllerTest {
     }
 
     @Test
-    @WithMockUser(username="spring")
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void deleteTerrain_withValidId_shouldDeleteUseAndReturnDeleted() throws Exception {
         var deleteDto = createTerrainDto(1L, "wet");
 
@@ -147,5 +147,22 @@ public class TerrainControllerTest {
                 Arguments.of(delete("/api/v1/terrain/delete/1"))
         );
     }
+
+    @ParameterizedTest
+    @MethodSource("authorizedUrls")
+    @WithMockUser(username="spring", authorities = "USER")
+    public void endpoint_withoutPermissions_returns403(RequestBuilder requestBuilder) throws Exception {
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isForbidden());
+    }
+
+    private static Stream<Arguments> authorizedUrls() throws Exception {
+        return Stream.of(
+                Arguments.of(put("/api/v1/terrain/new").content(convertToJson(createTerrainCreateDto("a"))).contentType(MediaType.APPLICATION_JSON)),
+                Arguments.of(put("/api/v1/terrain/edit").content(convertToJson(createTerrainDto(1L, "A"))).contentType(MediaType.APPLICATION_JSON)),
+                Arguments.of(delete("/api/v1/terrain/delete/1"))
+        );
+    }
+
 
 }

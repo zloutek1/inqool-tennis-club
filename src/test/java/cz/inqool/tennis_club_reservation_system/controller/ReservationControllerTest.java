@@ -86,7 +86,7 @@ public class ReservationControllerTest {
     }
 
     @Test
-    @WithMockUser(username="spring")
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void editReservation_withValidForm_shouldEditAndReturnEditedReservation() throws Exception {
         var reservationDto = createReservationDto(1L, GameType.SINGLES);
         var editedReservation = createReservationDto(1L, GameType.SINGLES);
@@ -103,7 +103,7 @@ public class ReservationControllerTest {
     }
 
     @Test
-    @WithMockUser(username="spring")
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void editReservation_withInvalidForm_returnsNotFound() throws Exception {
         var reservationDto = createReservationDto(999L, GameType.DOUBLES);
 
@@ -117,7 +117,7 @@ public class ReservationControllerTest {
     }
 
     @Test
-    @WithMockUser(username="spring")
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void deleteReservation_withInvalidId_returnsNotFound() throws Exception {
         when(reservationService.deleteById(999L))
                 .thenThrow(new NotFoundException("Reservation with id 999 not found"));
@@ -127,7 +127,7 @@ public class ReservationControllerTest {
     }
 
     @Test
-    @WithMockUser(username="spring")
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void deleteReservation_withValidId_shouldDeleteUseAndReturnDeleted() throws Exception {
         var deleteDto = createReservationDto(1L, GameType.DOUBLES);
 
@@ -156,4 +156,18 @@ public class ReservationControllerTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("authorisedUrls")
+    @WithMockUser(username="spring", authorities = "USER")
+    public void endpoint_withoutPermissions_returns403(RequestBuilder requestBuilder) throws Exception {
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isForbidden());
+    }
+
+    private static Stream<Arguments> authorisedUrls() throws Exception {
+        return Stream.of(
+                Arguments.of(put("/api/v1/reservation/edit").content(convertToJson(createReservationDto(1L, GameType.DOUBLES))).contentType(MediaType.APPLICATION_JSON)),
+                Arguments.of(delete("/api/v1/reservation/delete/1"))
+        );
+    }
 }

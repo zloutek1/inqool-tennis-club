@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -27,18 +28,21 @@ public class CourtController {
     private final CourtService courtService;
 
     @PutMapping(ApiUris.COURT_NEW)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CourtDto> newCourt(@Valid @RequestBody CourtCreateDto createDto) {
         CourtDto savedCourt = courtService.save(createDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedCourt);
     }
 
     @PutMapping(ApiUris.COURT_EDIT)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CourtDto> editCourt(@Valid @RequestBody CourtDto editDto) {
         CourtDto editedCourt = courtService.edit(editDto);
         return ResponseEntity.ok(editedCourt);
     }
 
     @DeleteMapping(ApiUris.COURT_DELETE)
+    @PreAuthorize("hasAuthority('ADMIN')")
     public ResponseEntity<CourtDto> deleteCourt(@PathVariable Long id) {
         CourtDto deletedCourt = courtService.deleteById(id);
         return ResponseEntity.ok(deletedCourt);

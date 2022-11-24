@@ -42,11 +42,6 @@ public class User extends BaseEntity implements UserDetails {
         this.password = password;
     }
 
-    public User(@NonNull String fullName, @NonNull String username, @NonNull String password, Set<Role> roles) {
-        this(fullName, username, password);
-        this.roles = roles;
-    }
-
     public void addRole(Role role) {
         roles.add(role);
     }

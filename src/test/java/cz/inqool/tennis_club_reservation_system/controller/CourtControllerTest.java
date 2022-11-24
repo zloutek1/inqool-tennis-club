@@ -63,7 +63,7 @@ public class CourtControllerTest {
     }
 
     @Test
-    @WithMockUser(username="spring")
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void newCourt_withValidForm_shouldCreateAndReturnNewCourt() throws Exception {
         var createDto = CourtFactory.createCourtCreateDto(4);
         var createdCourtDto = createCourtDto(1L, 4);
@@ -80,7 +80,7 @@ public class CourtControllerTest {
     }
 
     @Test
-    @WithMockUser(username="spring")
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void editCourt_withValidForm_shouldEditAndReturnEditedCourt() throws Exception {
         var courtDto = createCourtDto(1L, 5);
         var editedCourt = createCourtDto(1L, 5);
@@ -97,7 +97,7 @@ public class CourtControllerTest {
     }
 
     @Test
-    @WithMockUser(username="spring")
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void editCourt_withInvalidForm_returnsNotFound() throws Exception {
         var courtDto = createCourtDto(999L, 5);
 
@@ -111,7 +111,7 @@ public class CourtControllerTest {
     }
 
     @Test
-    @WithMockUser(username="spring")
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void deleteCourt_withInvalidId_returnsNotFound() throws Exception {
         when(courtService.deleteById(999L))
                 .thenThrow(new NotFoundException("Court with id 999 not found"));
@@ -121,7 +121,7 @@ public class CourtControllerTest {
     }
 
     @Test
-    @WithMockUser(username="spring")
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void deleteCourt_withValidId_shouldDeleteUseAndReturnDeleted() throws Exception {
         var deleteDto = createCourtDto(1L, 5);
 
@@ -178,4 +178,19 @@ public class CourtControllerTest {
         );
     }
 
+    @ParameterizedTest
+    @MethodSource("authorizedUrls")
+    @WithMockUser(username="spring", authorities = "USER")
+    public void endpoint_withoutPermissions_returns403(RequestBuilder requestBuilder) throws Exception {
+        mockMvc.perform(requestBuilder)
+                .andExpect(status().isForbidden());
+    }
+
+    private static Stream<Arguments> authorizedUrls() throws Exception {
+        return Stream.of(
+                Arguments.of(put("/api/v1/court/new").content(convertToJson(createCourtCreateDto(5))).contentType(MediaType.APPLICATION_JSON)),
+                Arguments.of(put("/api/v1/court/edit").content(convertToJson(createCourtDto(1L, 6))).contentType(MediaType.APPLICATION_JSON)),
+                Arguments.of(delete("/api/v1/court/delete/1"))
+        );
+    }
 }
