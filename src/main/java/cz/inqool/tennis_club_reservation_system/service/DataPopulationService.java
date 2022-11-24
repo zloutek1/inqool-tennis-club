@@ -1,20 +1,20 @@
 package cz.inqool.tennis_club_reservation_system.service;
 
-import cz.inqool.tennis_club_reservation_system.dto.CourtCreateDto;
-import cz.inqool.tennis_club_reservation_system.dto.RoleCreateDto;
-import cz.inqool.tennis_club_reservation_system.dto.TerrainCreateDto;
-import cz.inqool.tennis_club_reservation_system.dto.TerrainDto;
+import cz.inqool.tennis_club_reservation_system.dto.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import javax.transaction.Transactional;
 import java.math.BigDecimal;
 import java.util.List;
 
 @Service
+@Transactional
 @RequiredArgsConstructor
 public class DataPopulationService {
 
     private final RoleService roleService;
+    private final UserService userService;
     private final TerrainService terrainService;
     private final CourtService courtService;
 
@@ -22,6 +22,7 @@ public class DataPopulationService {
 
     public void populateDatabase() {
         populateRoles();
+        populateUsers();
         populateTerrains();
         populateCourts();
     }
@@ -31,6 +32,10 @@ public class DataPopulationService {
         roleService.save(new RoleCreateDto("ADMIN"));
     }
 
+    private void populateUsers() {
+        userService.save(new UserCreateDto("+44 333 2222222", "admin", "pass", "pass"));
+        userService.addRole("admin", "ADMIN");
+    }
 
     private void populateTerrains() {
         terrains.add(terrainService.save(new TerrainCreateDto("dry", BigDecimal.valueOf(2.2))));
