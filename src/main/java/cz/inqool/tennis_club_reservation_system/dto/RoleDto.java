@@ -10,7 +10,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class RoleDto {
+public class RoleDto implements EntityDto<Long> {
 
     @NotNull private Long id;
 
