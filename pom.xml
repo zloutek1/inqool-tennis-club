@@ -101,6 +101,12 @@
 			<version>1.6.2</version>
 		</dependency>
 
+		<!-- bean reflection -->
+		<dependency>
+			<groupId>commons-beanutils</groupId>
+			<artifactId>commons-beanutils</artifactId>
+			<version>1.9.4</version>
+		</dependency>
 
 		<!--
 		 - - - - - - - - - - - - - [[ Documentation ]] - - - - - - - - - - - - -

@@ -31,7 +31,7 @@ public class FixedTimeConfiguration {
     }
 
     @Bean
-    public LocalValidatorFactoryBean localValidatorFactoryBean() {
+    public LocalValidatorFactoryBean validator() {
         return new LocalValidatorFactoryBean() {
             @Override
             protected void postProcessConfiguration(Configuration<?> configuration) {

@@ -1,6 +1,7 @@
 package cz.inqool.tennis_club_reservation_system.dto;
 
 import cz.inqool.tennis_club_reservation_system.model.GameType;
+import cz.inqool.tennis_club_reservation_system.validator.ReservationDateAvailable;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -13,6 +14,7 @@ import java.time.LocalDateTime;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@ReservationDateAvailable
 public class ReservationCreateDto {
 
     @NotNull private CourtDto court;
