@@ -19,4 +19,8 @@ public class Terrain extends BaseEntity {
 
     private BigDecimal price;
 
+    public Terrain(String type, BigDecimal price) {
+        this.type = type;
+        this.price = price;
+    }
 }

@@ -32,4 +32,9 @@ public abstract class ApiUris {
     public static final String RESERVATION_DELETE = "/reservation/delete/{id}";
     public static final String RESERVATIONS = "/reservation/";
 
+    public static final String TERRAIN_NEW = "/terrain/new";
+    public static final String TERRAIN_EDIT = "/terrain/edit";
+    public static final String TERRAIN_DELETE = "/terrain/delete/{id}";
+    public static final String TERRAINS = "/terrain/";
+
 }
