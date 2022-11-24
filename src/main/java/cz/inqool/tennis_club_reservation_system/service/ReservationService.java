@@ -11,8 +11,18 @@ import org.springframework.stereotype.Service;
 @Service
 public class ReservationService extends CrudService<Reservation, Long, ReservationDto, ReservationCreateDto, ReservationDto> {
 
+    private final UserService userService;
 
-    public ReservationService(ReservationRepository reservationRepository, BeanMappingService beanMappingService) {
+    public ReservationService(ReservationRepository reservationRepository, BeanMappingService beanMappingService, UserService userService) {
         super(reservationRepository, beanMappingService, Reservation.class, ReservationDto.class);
+        this.userService = userService;
+    }
+
+    @Override
+    public ReservationDto save(ReservationCreateDto reservationCreateDto) {
+        var user = userService.save(reservationCreateDto.getUser());
+        var reservation = super.save(reservationCreateDto);
+        reservation.setUser(user);
+        return reservation;
     }
 }

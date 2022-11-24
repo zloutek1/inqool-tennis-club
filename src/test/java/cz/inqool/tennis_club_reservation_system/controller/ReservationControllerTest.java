@@ -5,6 +5,7 @@ import cz.inqool.tennis_club_reservation_system.dto.ReservationDto;
 import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
 import cz.inqool.tennis_club_reservation_system.model.GameType;
 import cz.inqool.tennis_club_reservation_system.model.factory.ReservationFactory;
+import cz.inqool.tennis_club_reservation_system.service.PriceCalculationService;
 import cz.inqool.tennis_club_reservation_system.service.ReservationService;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.params.ParameterizedTest;
@@ -21,6 +22,7 @@ import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.RequestBuilder;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.stream.Stream;
 
@@ -43,6 +45,9 @@ public class ReservationControllerTest {
 
     @MockBean
     private ReservationService reservationService;
+
+    @MockBean
+    private PriceCalculationService priceCalculationService;
 
     @Test
     @WithMockUser(username="spring")
@@ -70,13 +75,14 @@ public class ReservationControllerTest {
 
         when(reservationService.save(createDto))
                 .thenReturn(createdReservationDto);
+        when(priceCalculationService.calculatePrice(createdReservationDto))
+                .thenReturn(BigDecimal.valueOf(13.22));
 
         mockMvc.perform(put("/api/v1/reservation/new")
                         .content(convertToJson(createDto))
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isCreated())
-                .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.gameType").value("SINGLES"));
+                .andExpect(jsonPath("$").value(13.22));
     }
 
     @Test

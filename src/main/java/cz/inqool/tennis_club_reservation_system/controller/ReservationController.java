@@ -3,6 +3,7 @@ package cz.inqool.tennis_club_reservation_system.controller;
 import cz.inqool.tennis_club_reservation_system.configs.ApiUris;
 import cz.inqool.tennis_club_reservation_system.dto.ReservationCreateDto;
 import cz.inqool.tennis_club_reservation_system.dto.ReservationDto;
+import cz.inqool.tennis_club_reservation_system.service.PriceCalculationService;
 import cz.inqool.tennis_club_reservation_system.service.ReservationService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
@@ -15,6 +16,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.math.BigDecimal;
 
 @RestController
 @Tag(name = "reservation")
@@ -23,11 +25,13 @@ import javax.validation.Valid;
 public class ReservationController {
 
     private final ReservationService reservationService;
+    private final PriceCalculationService priceCalculationService;
 
     @PutMapping(ApiUris.RESERVATION_NEW)
-    public ResponseEntity<ReservationDto> newReservation(@Valid @RequestBody ReservationCreateDto createDto) {
+    public ResponseEntity<BigDecimal> newReservation(@Valid @RequestBody ReservationCreateDto createDto) {
         ReservationDto savedReservation = reservationService.save(createDto);
-        return ResponseEntity.status(HttpStatus.CREATED).body(savedReservation);
+        BigDecimal price = priceCalculationService.calculatePrice(savedReservation);
+        return ResponseEntity.status(HttpStatus.CREATED).body(price);
     }
 
     @PutMapping(ApiUris.RESERVATION_EDIT)
