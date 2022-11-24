@@ -16,6 +16,8 @@ import java.util.Set;
 @NoArgsConstructor(access = AccessLevel.PROTECTED, onConstructor_ = @PersistenceCreator)
 public class Court extends BaseEntity {
 
+    private int number;
+
     @ManyToOne
     private Terrain terrain;
 
@@ -23,4 +25,8 @@ public class Court extends BaseEntity {
     @OneToMany
     private Set<Reservation> reservations = new HashSet<>();
 
+    public Court(int number, Terrain terrain) {
+        this.number = number;
+        this.terrain = terrain;
+    }
 }

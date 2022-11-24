@@ -42,7 +42,7 @@ public class CourtController {
         return ResponseEntity.ok(deletedCourt);
     }
 
-    @PutMapping(ApiUris.COURTS)
+    @GetMapping(ApiUris.COURTS)
     @PageableAsQueryParam
     public ResponseEntity<Page<CourtDto>> findAllCourts(@ParameterObject Pageable pageable) {
         Page<CourtDto> courts = courtService.findAll(pageable);
