@@ -108,6 +108,18 @@ public class UserControllerTest {
 
     @Test
     @WithMockUser(username="spring", authorities = "ADMIN")
+    public void newUser_withInvalidForm_returnsBadRequest() throws Exception {
+        var createDto = createUserCreateDto("kayle22");
+        createDto.setPhoneNumber("hello");
+
+        mockMvc.perform(put("/api/v1/user/new")
+                        .content(convertToJson(createDto))
+                        .contentType(MediaType.APPLICATION_JSON))
+                .andExpect(status().isBadRequest());
+    }
+
+    @Test
+    @WithMockUser(username="spring", authorities = "ADMIN")
     public void newUser_withValidForm_shouldCreateAndReturnNewUser() throws Exception {
         var createDto = createUserCreateDto("kayle22");
         var createdUser = createUserDto(1L, "kayle22");
@@ -238,6 +250,13 @@ public class UserControllerTest {
 
         mockMvc.perform(post("/api/v1/user/kayle22/role/missingRole/remove"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username="spring", authorities = "ADMIN")
+    public void findUserById_givenPostRequest_returnsMethodNotAllowed() throws Exception {
+        mockMvc.perform(post("/api/v1/user/1"))
+                .andExpect(status().isMethodNotAllowed());
     }
 
     @ParameterizedTest

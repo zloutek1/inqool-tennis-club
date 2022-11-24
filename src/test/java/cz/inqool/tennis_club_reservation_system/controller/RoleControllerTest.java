@@ -45,13 +45,13 @@ public class RoleControllerTest {
     @Test
     @WithMockUser(username="spring", authorities = "ADMIN")
     public void findAllRoles_withTwoRoles_shouldReturnPaginatedRoles() throws Exception {
-        List<RoleDto> users = List.of(
+        List<RoleDto> roles = List.of(
                 createRoleDto(1L, "USER"),
                 createRoleDto(2L, "ADMIN")
         );
 
         when(roleService.findAll(any(Pageable.class)))
-                .thenReturn(new PageImpl<>(users));
+                .thenReturn(new PageImpl<>(roles));
 
         mockMvc.perform(get("/api/v1/role/"))
                 .andExpect(status().isOk())
