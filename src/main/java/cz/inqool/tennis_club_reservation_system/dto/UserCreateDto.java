@@ -1,5 +1,6 @@
 package cz.inqool.tennis_club_reservation_system.dto;
 
+import cz.inqool.tennis_club_reservation_system.validator.FieldMatch;
 import cz.inqool.tennis_club_reservation_system.validator.PhoneNumber;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
@@ -12,6 +13,7 @@ import javax.validation.constraints.NotNull;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
+@FieldMatch(field = "password", matchField = "confirmPassword")
 public class UserCreateDto {
     @PhoneNumber
     @Schema(example = "+52 3923 169 322")
