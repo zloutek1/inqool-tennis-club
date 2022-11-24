@@ -16,6 +16,9 @@ class DataPopulationServiceTest {
     private RoleService roleService;
 
     @MockBean
+    private UserService userService;
+
+    @MockBean
     private TerrainService terrainService;
 
     @MockBean
@@ -29,6 +32,7 @@ class DataPopulationServiceTest {
         dataPopulationService.populateDatabase();
 
         verify(roleService, times(2)).save(any());
+        verify(userService, times(1)).save(any());
         verify(terrainService, times(2)).save(any());
         verify(courtService, times(4)).save(any());
     }
