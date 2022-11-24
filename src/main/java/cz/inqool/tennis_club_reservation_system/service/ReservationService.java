@@ -2,6 +2,7 @@ package cz.inqool.tennis_club_reservation_system.service;
 
 import cz.inqool.tennis_club_reservation_system.dto.ReservationCreateDto;
 import cz.inqool.tennis_club_reservation_system.dto.ReservationDto;
+import cz.inqool.tennis_club_reservation_system.dto.UserCreateDto;
 import cz.inqool.tennis_club_reservation_system.model.Reservation;
 import cz.inqool.tennis_club_reservation_system.repository.ReservationRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -20,9 +21,14 @@ public class ReservationService extends CrudService<Reservation, Long, Reservati
 
     @Override
     public ReservationDto save(ReservationCreateDto reservationCreateDto) {
-        var user = userService.save(reservationCreateDto.getUser());
+        UserCreateDto userCreateDto = reservationCreateDto.getUser();
+        var user = userService.findUserByUsername(userCreateDto.getUsername())
+                .orElseGet(() -> userService.save(userCreateDto));
+
         var reservation = super.save(reservationCreateDto);
         reservation.setUser(user);
+        userService.addReservation(user.getUsername(), reservation.getId());
+
         return reservation;
     }
 }

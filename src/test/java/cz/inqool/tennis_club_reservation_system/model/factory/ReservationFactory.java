@@ -31,6 +31,12 @@ public class ReservationFactory {
         return reservation;
     }
 
+    public static Reservation createReservation(Long id, User user) {
+        var reservation = new Reservation(defaultCourt, defaultGameType, defaultFromDate, defaultToDate, user);
+        reservation.setId(id);
+        return reservation;
+    }
+
     public static Reservation createReservation(Long id, LocalDateTime fromDate, LocalDateTime toDate) {
         var reservation = new Reservation(defaultCourt, defaultGameType, fromDate, toDate, defaultUser);
         reservation.setId(id);
@@ -41,12 +47,20 @@ public class ReservationFactory {
         return new ReservationDto(id, defaultCourtDto, gameType, defaultFromDate, defaultToDate, defaultUserDto);
     }
 
+    public static ReservationDto createReservationDto(Long id, UserDto userDto) {
+        return new ReservationDto(id, defaultCourtDto, defaultGameType, defaultFromDate, defaultToDate, userDto);
+    }
+
     public static ReservationDto createReservationDto(Long id,  LocalDateTime fromDate, LocalDateTime toDate) {
         return new ReservationDto(id, defaultCourtDto, defaultGameType, fromDate, toDate, defaultUserDto);
     }
 
     public static ReservationCreateDto createReservationCreateDto(GameType gameType) {
         return new ReservationCreateDto(defaultCourtDto, gameType, defaultFromDate, defaultToDate, defaultUserCreateDto);
+    }
+
+    public static ReservationCreateDto createReservationCreateDto(UserCreateDto userCreateDto) {
+        return new ReservationCreateDto(defaultCourtDto, defaultGameType, defaultFromDate, defaultToDate, userCreateDto);
     }
 
 }

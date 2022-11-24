@@ -5,8 +5,10 @@ import cz.inqool.tennis_club_reservation_system.dto.UserCreateDto;
 import cz.inqool.tennis_club_reservation_system.dto.UserDto;
 import cz.inqool.tennis_club_reservation_system.dto.UserEditDto;
 import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
+import cz.inqool.tennis_club_reservation_system.model.Reservation;
 import cz.inqool.tennis_club_reservation_system.model.Role;
 import cz.inqool.tennis_club_reservation_system.model.User;
+import cz.inqool.tennis_club_reservation_system.repository.ReservationRepository;
 import cz.inqool.tennis_club_reservation_system.repository.RoleRepository;
 import cz.inqool.tennis_club_reservation_system.repository.UserRepository;
 import lombok.extern.slf4j.Slf4j;
@@ -30,13 +32,15 @@ public class UserService extends CrudService<User, Long, UserDto, UserCreateDto,
 
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
+    private final ReservationRepository reservationRepository;
     private final PasswordEncoder passwordEncoder;
     private final Clock clock;
 
-    public UserService(UserRepository userRepository, BeanMappingService beanMappingService, RoleRepository roleRepository, PasswordEncoder passwordEncoder, Clock clock) {
+    public UserService(UserRepository userRepository, BeanMappingService beanMappingService, RoleRepository roleRepository, ReservationRepository reservationRepository, PasswordEncoder passwordEncoder, Clock clock) {
         super(userRepository, beanMappingService, User.class, UserDto.class);
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
+        this.reservationRepository = reservationRepository;
         this.passwordEncoder = passwordEncoder;
         this.clock = clock;
     }
@@ -93,6 +97,20 @@ public class UserService extends CrudService<User, Long, UserDto, UserCreateDto,
         user.removeRole(role);
     }
 
+    public void addReservation(String username, Long reservationId) {
+        User user = tryToFindUser(username);
+        Reservation reservation = tryToFindReservation(reservationId);
+        log.info("Adding Reservation {} to User {}", reservation.getId(), user.getUsername());
+        user.addReservation(reservation);
+    }
+
+    public void removeReservation(String username, Long reservationId) {
+        User user = tryToFindUser(username);
+        Reservation reservation = tryToFindReservation(reservationId);
+        log.info("Removing Role {} to User {}", reservation.getId(), user.getUsername());
+        user.removeReservation(reservation);
+    }
+
 
     public List<ReservationDto> findReservations(String phoneNumber, boolean future) {
         User user = tryToFindUserByPhoneNumber(phoneNumber);
@@ -123,5 +141,10 @@ public class UserService extends CrudService<User, Long, UserDto, UserCreateDto,
     private Role tryToFindRole(String roleName) {
         return roleRepository.findByName(roleName)
                 .orElseThrow(() -> new NotFoundException("Role with name " + roleName + " not found"));
+    }
+
+    private Reservation tryToFindReservation(Long reservationId) {
+        return reservationRepository.findById(reservationId)
+                .orElseThrow(() -> new NotFoundException("Reservation with id " + reservationId + " not found"));
     }
 }

@@ -54,6 +54,13 @@ public class User extends BaseEntity implements UserDetails {
         roles.remove(role);
     }
 
+    public void addReservation(Reservation reservation) {
+        reservations.add(reservation);
+    }
+    public void removeReservation(Reservation reservation) {
+        reservations.remove(reservation);
+    }
+
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return roles;
