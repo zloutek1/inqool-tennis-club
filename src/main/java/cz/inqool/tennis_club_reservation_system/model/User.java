@@ -19,8 +19,8 @@ import java.util.Set;
 public class User extends BaseEntity implements UserDetails {
 
     @NonNull
-    @Column(nullable = false)
-    private String fullName;
+    @Column(nullable = false, unique = true)
+    private String phoneNumber;
 
     @NonNull
     @Column(nullable = false, unique = true)
@@ -34,8 +34,12 @@ public class User extends BaseEntity implements UserDetails {
     @ManyToMany(fetch = FetchType.EAGER)
     private Set<Role> roles = new HashSet<>();
 
-    public User(@NonNull String fullName, @NonNull String username, @NonNull String password) {
-        this.fullName = fullName;
+    @ToString.Exclude
+    @OneToMany
+    private Set<Reservation> reservations = new HashSet<>();
+
+    public User(@NonNull String phoneNumber, @NonNull String username, @NonNull String password) {
+        this.phoneNumber = phoneNumber;
         this.username = username;
         this.password = password;
     }
