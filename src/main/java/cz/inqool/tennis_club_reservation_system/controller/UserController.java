@@ -29,26 +29,26 @@ public class UserController {
 
     @PutMapping(ApiUris.USER_NEW)
     public ResponseEntity<UserDto> newUser(@Valid @RequestBody UserCreateDto userCreateDto) {
-        UserDto savedUser = userService.saveUser(userCreateDto);
+        UserDto savedUser = userService.save(userCreateDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedUser);
     }
 
     @PutMapping(ApiUris.USER_EDIT)
     public ResponseEntity<UserDto> editUser(@Valid @RequestBody UserEditDto userEditDto) {
-        UserDto editedUser = userService.editUser(userEditDto);
+        UserDto editedUser = userService.edit(userEditDto);
         return ResponseEntity.ok(editedUser);
     }
 
     @DeleteMapping(ApiUris.USER_DELETE)
     public ResponseEntity<UserDto> deleteUser(@PathVariable Long id) {
-        UserDto deletedUser = userService.deleteUser(id);
+        UserDto deletedUser = userService.deleteById(id);
         return ResponseEntity.ok(deletedUser);
     }
 
     @GetMapping(ApiUris.USERS)
     @PageableAsQueryParam
     public ResponseEntity<Page<UserDto>> findAllUsers(@ParameterObject Pageable pageable) {
-        Page<UserDto> userDtos = userService.findAllUsers(pageable);
+        Page<UserDto> userDtos = userService.findAll(pageable);
         return ResponseEntity.ok(userDtos);
     }
 
@@ -63,7 +63,7 @@ public class UserController {
     }
 
     private ResponseEntity<UserDto> findUserById(Long id) {
-        return userService.findUserById(id)
+        return userService.findById(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

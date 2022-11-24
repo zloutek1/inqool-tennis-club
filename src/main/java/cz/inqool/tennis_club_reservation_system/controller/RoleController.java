@@ -28,26 +28,26 @@ public class RoleController {
 
     @PutMapping(ApiUris.ROLE_NEW)
     public ResponseEntity<RoleDto> newRole(@Valid @RequestBody RoleCreateDto roleDto) {
-        RoleDto savedRole = roleService.saveRole(roleDto);
+        RoleDto savedRole = roleService.save(roleDto);
         return ResponseEntity.status(HttpStatus.CREATED).body(savedRole);
     }
 
     @PutMapping(ApiUris.ROLE_EDIT)
     public ResponseEntity<RoleDto> editRole(@Valid @RequestBody RoleDto roleDto) {
-        RoleDto editedRole = roleService.editRole(roleDto);
+        RoleDto editedRole = roleService.edit(roleDto);
         return ResponseEntity.ok(editedRole);
     }
 
     @DeleteMapping(ApiUris.ROLE_DELETE)
     public ResponseEntity<RoleDto> deleteUser(@PathVariable Long id) {
-        RoleDto deletedRole = roleService.deleteRole(id);
+        RoleDto deletedRole = roleService.deleteById(id);
         return ResponseEntity.ok(deletedRole);
     }
 
     @GetMapping(ApiUris.ROLES)
     @PageableAsQueryParam
-    public ResponseEntity<Page<RoleDto>> findALlRoles(@ParameterObject Pageable pageable) {
-        Page<RoleDto> roleDtos = roleService.findAllRoles(pageable);
+    public ResponseEntity<Page<RoleDto>> findAllRoles(@ParameterObject Pageable pageable) {
+        Page<RoleDto> roleDtos = roleService.findAll(pageable);
         return ResponseEntity.ok(roleDtos);
     }
 
