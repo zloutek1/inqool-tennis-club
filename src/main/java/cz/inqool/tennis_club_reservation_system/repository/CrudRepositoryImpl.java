@@ -5,6 +5,7 @@ import org.hibernate.Session;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.repository.NoRepositoryBean;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
@@ -12,6 +13,7 @@ import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Optional;
 
+@NoRepositoryBean
 public abstract class CrudRepositoryImpl<T extends BaseEntity, ID> implements CrudRepository<T, ID> {
     private final Class<T> clazz;
     protected final EntityManager entityManager;
