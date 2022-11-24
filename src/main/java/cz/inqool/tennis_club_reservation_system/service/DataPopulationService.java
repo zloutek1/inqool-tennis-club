@@ -15,8 +15,8 @@ public class DataPopulationService {
     }
 
     private void populateRoles() {
-        roleService.saveRole(new RoleCreateDto("USER"));
-        roleService.saveRole(new RoleCreateDto("ADMIN"));
+        roleService.save(new RoleCreateDto("USER"));
+        roleService.save(new RoleCreateDto("ADMIN"));
     }
 
 }
