@@ -3,7 +3,6 @@ package cz.inqool.tennis_club_reservation_system.repository;
 import cz.inqool.tennis_club_reservation_system.model.Role;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import java.time.Clock;
 import java.util.Optional;
@@ -11,8 +10,8 @@ import java.util.Optional;
 @Repository
 public class RoleRepositoryImpl extends CrudRepositoryImpl<Role, Long> implements RoleRepository {
 
-    public RoleRepositoryImpl(EntityManager entityManager, Clock clock) {
-        super(entityManager, clock, Role.class);
+    public RoleRepositoryImpl(Clock clock) {
+        super(clock, Role.class);
     }
 
     public Optional<Role> findByName(String name) {

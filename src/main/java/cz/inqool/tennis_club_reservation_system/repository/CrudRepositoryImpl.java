@@ -9,6 +9,7 @@ import org.springframework.data.repository.NoRepositoryBean;
 
 import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
+import javax.persistence.PersistenceContext;
 import java.time.Clock;
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -16,11 +17,12 @@ import java.util.Optional;
 @NoRepositoryBean
 public abstract class CrudRepositoryImpl<T extends BaseEntity, ID> implements CrudRepository<T, ID> {
     private final Class<T> clazz;
-    protected final EntityManager entityManager;
+
+    @PersistenceContext
+    protected EntityManager entityManager;
     private final Clock clock;
 
-    public CrudRepositoryImpl(EntityManager entityManager, Clock clock, Class<T> clazz) {
-        this.entityManager = entityManager;
+    public CrudRepositoryImpl(Clock clock, Class<T> clazz) {
         this.clazz = clazz;
         this.clock = clock;
     }

@@ -3,15 +3,14 @@ package cz.inqool.tennis_club_reservation_system.repository;
 import cz.inqool.tennis_club_reservation_system.model.User;
 import org.springframework.stereotype.Repository;
 
-import javax.persistence.EntityManager;
 import javax.persistence.NoResultException;
 import java.time.Clock;
 import java.util.Optional;
 
 @Repository
 public class UserRepositoryImpl extends CrudRepositoryImpl<User, Long> implements UserRepository {
-    public UserRepositoryImpl(EntityManager entityManager, Clock clock) {
-        super(entityManager, clock, User.class);
+    public UserRepositoryImpl(Clock clock) {
+        super(clock, User.class);
     }
 
     @Override
