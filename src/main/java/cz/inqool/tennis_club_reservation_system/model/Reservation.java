@@ -24,4 +24,11 @@ public class Reservation extends BaseEntity {
     @ManyToOne
     private User user;
 
+    public Reservation(Court court, GameType gameType, LocalDateTime fromDate, LocalDateTime toDate, User user) {
+        this.court = court;
+        this.gameType = gameType;
+        this.fromDate = fromDate;
+        this.toDate = toDate;
+        this.user = user;
+    }
 }

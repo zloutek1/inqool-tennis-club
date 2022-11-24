@@ -42,7 +42,7 @@ public class ReservationController {
         return ResponseEntity.ok(deletedReservation);
     }
 
-    @PutMapping(ApiUris.RESERVATIONS)
+    @GetMapping(ApiUris.RESERVATIONS)
     @PageableAsQueryParam
     public ResponseEntity<Page<ReservationDto>> findAllReservations(@ParameterObject Pageable pageable) {
         Page<ReservationDto> reservations = reservationService.findAll(pageable);
