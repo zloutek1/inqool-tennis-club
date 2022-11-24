@@ -63,4 +63,8 @@ public class ReservationFactory {
         return new ReservationCreateDto(defaultCourtDto, defaultGameType, defaultFromDate, defaultToDate, userCreateDto);
     }
 
+    public static ReservationCreateDto createReservationCreateDto(CourtDto courtDto, LocalDateTime fromDate, LocalDateTime toDate) {
+        return new ReservationCreateDto(courtDto, defaultGameType, fromDate, toDate, defaultUserCreateDto);
+    }
+
 }

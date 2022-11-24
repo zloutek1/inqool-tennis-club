@@ -3,7 +3,7 @@ package cz.inqool.tennis_club_reservation_system.service;
 import cz.inqool.tennis_club_reservation_system.dto.UserCreateDto;
 import cz.inqool.tennis_club_reservation_system.dto.UserDto;
 import cz.inqool.tennis_club_reservation_system.model.User;
-import cz.inqool.tennis_club_reservation_system.repository.ReservationRepository;
+import cz.inqool.tennis_club_reservation_system.repository.ReservationRepositoryImpl;
 import cz.inqool.tennis_club_reservation_system.repository.UserRepositoryImpl;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,11 +25,10 @@ class ReservationServiceTest {
     private UserRepositoryImpl userRepository;
 
     @MockBean
-    private ReservationRepository reservationRepository;
+    private ReservationRepositoryImpl reservationRepository;
 
     @Autowired
     private ReservationService reservationService;
-
 
     private final User user = createUser(1L, "bob");
     private final UserCreateDto userCreateDto = createUserCreateDto("bob");

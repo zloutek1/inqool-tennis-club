@@ -8,7 +8,7 @@ import cz.inqool.tennis_club_reservation_system.model.Reservation;
 import cz.inqool.tennis_club_reservation_system.model.Role;
 import cz.inqool.tennis_club_reservation_system.model.User;
 import cz.inqool.tennis_club_reservation_system.model.factory.UserFactory;
-import cz.inqool.tennis_club_reservation_system.repository.ReservationRepository;
+import cz.inqool.tennis_club_reservation_system.repository.ReservationRepositoryImpl;
 import cz.inqool.tennis_club_reservation_system.repository.RoleRepositoryImpl;
 import cz.inqool.tennis_club_reservation_system.repository.UserRepositoryImpl;
 import org.junit.jupiter.api.Test;
@@ -43,7 +43,7 @@ public class UserServiceTest {
     private RoleRepositoryImpl roleRepository;
 
     @MockBean
-    private ReservationRepository reservationRepository;
+    private ReservationRepositoryImpl reservationRepository;
 
     @MockBean
     private PasswordEncoder passwordEncoder;
