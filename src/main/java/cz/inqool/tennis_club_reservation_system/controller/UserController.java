@@ -1,10 +1,11 @@
 package cz.inqool.tennis_club_reservation_system.controller;
 
-import cz.inqool.tennis_club_reservation_system.service.UserService;
+import cz.inqool.tennis_club_reservation_system.configs.ApiUris;
+import cz.inqool.tennis_club_reservation_system.dto.ReservationDto;
 import cz.inqool.tennis_club_reservation_system.dto.UserCreateDto;
 import cz.inqool.tennis_club_reservation_system.dto.UserDto;
 import cz.inqool.tennis_club_reservation_system.dto.UserEditDto;
-import cz.inqool.tennis_club_reservation_system.configs.ApiUris;
+import cz.inqool.tennis_club_reservation_system.service.UserService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springdoc.api.annotations.ParameterObject;
@@ -17,6 +18,7 @@ import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
+import java.util.List;
 
 @RestController
 @Tag(name = "user")
@@ -84,6 +86,12 @@ public class UserController {
     public ResponseEntity<String> removeRole(@PathVariable String username, @PathVariable String roleName) {
         userService.removeRole(username, roleName);
         return ResponseEntity.ok("Role with name " + roleName + " removed successfully");
+    }
+
+    @GetMapping(ApiUris.USER_RESERVATIONS)
+    public ResponseEntity<List<ReservationDto>> findUserReservations(@PathVariable String phoneNumber, @RequestParam(required = false) boolean future) {
+        var reservations = userService.findReservations(phoneNumber, future);
+        return ResponseEntity.ok(reservations);
     }
 
 }

@@ -1,12 +1,15 @@
 package cz.inqool.tennis_club_reservation_system.service;
 
+import cz.inqool.tennis_club_reservation_system.FixedTimeConfiguration;
+import cz.inqool.tennis_club_reservation_system.dto.UserDto;
+import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
+import cz.inqool.tennis_club_reservation_system.exceptions.ServiceException;
+import cz.inqool.tennis_club_reservation_system.model.Reservation;
 import cz.inqool.tennis_club_reservation_system.model.Role;
 import cz.inqool.tennis_club_reservation_system.model.User;
+import cz.inqool.tennis_club_reservation_system.model.factory.UserFactory;
 import cz.inqool.tennis_club_reservation_system.repository.RoleRepositoryImpl;
 import cz.inqool.tennis_club_reservation_system.repository.UserRepositoryImpl;
-import cz.inqool.tennis_club_reservation_system.dto.UserDto;
-import cz.inqool.tennis_club_reservation_system.exceptions.ServiceException;
-import cz.inqool.tennis_club_reservation_system.model.factory.UserFactory;
 import org.junit.jupiter.api.Test;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Captor;
@@ -17,15 +20,19 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.Pageable;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
+import static cz.inqool.tennis_club_reservation_system.model.factory.ReservationFactory.createReservation;
+import static cz.inqool.tennis_club_reservation_system.model.factory.ReservationFactory.createReservationDto;
+import static cz.inqool.tennis_club_reservation_system.model.factory.UserFactory.createUser;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatExceptionOfType;
 import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.*;
 
-@SpringBootTest
+@SpringBootTest(classes = FixedTimeConfiguration.class)
 public class UserServiceTest {
 
     @MockBean
@@ -46,8 +53,8 @@ public class UserServiceTest {
     @Test
     public void saveUser_givenValidUser_saves() {
         var userCreateDto = UserFactory.createUserCreateDto("karl51", "myPa55w0rd");
-        var user = UserFactory.createUser(null, "karl51", "hashedPassword2");
-        var savedUser = UserFactory.createUser(2L, "karl51", "hashedPassword2");
+        var user = createUser(null, "karl51", "hashedPassword2");
+        var savedUser = createUser(2L, "karl51", "hashedPassword2");
         var userDto = UserFactory.createUserDto(2L, "karl51");
 
         when(userRepository.save(user))
@@ -79,7 +86,7 @@ public class UserServiceTest {
     @Test
     public void editUser_givenValidUser_updates() {
         var userEditDto = UserFactory.createUserEditDto(2L, "karl555");
-        var user = UserFactory.createUser(2L, "hashedPassword2");
+        var user = createUser(2L, "hashedPassword2");
         var userDto = UserFactory.createUserDto(2L, "hashedPassword2");
 
         when(userRepository.findById(any()))
@@ -106,7 +113,7 @@ public class UserServiceTest {
 
     @Test
     public void deleteUser_givenUser_deletes() {
-        var user = UserFactory.createUser(1L, "demo");
+        var user = createUser(1L, "demo");
         var expected = UserFactory.createUserDto(1L, "demo");
 
         when(userRepository.findById(eq(1L))).thenReturn(Optional.of(user));
@@ -119,7 +126,7 @@ public class UserServiceTest {
 
     @Test
     public void findAllUsers_withTwoUsers_returnsAll() {
-        var users = List.of(UserFactory.createUser(1L, "a1"), UserFactory.createUser(2L, "b1"));
+        var users = List.of(createUser(1L, "a1"), createUser(2L, "b1"));
         var userDtos = List.of(UserFactory.createUserDto(1L, "a1"), UserFactory.createUserDto(2L, "b1"));
         var pageable = mock(Pageable.class);
 
@@ -133,7 +140,7 @@ public class UserServiceTest {
 
     @Test
     public void findUserById_givenExistingId_returns() {
-        var user = UserFactory.createUser(2L, "karl51");
+        var user = createUser(2L, "karl51");
         var userDto = UserFactory.createUserDto(2L, "karl51");
 
         when(userRepository.findById(2L))
@@ -154,7 +161,7 @@ public class UserServiceTest {
 
     @Test
     public void findUserByUsername_givenExistingUser_returns() {
-        var user = UserFactory.createUser(2L, "karl51");
+        var user = createUser(2L, "karl51");
         var userDto = UserFactory.createUserDto(2L, "karl51");
 
         when(userRepository.findByUsername("karl51"))
@@ -251,4 +258,56 @@ public class UserServiceTest {
                 .withMessage("Role with name invalid not found");
     }
 
+    @Test
+    public void findReservations_givenInvalidUser_throws() {
+        when(userRepository.findByPhoneNumber("00456789"))
+                .thenReturn(Optional.empty());
+
+        assertThatExceptionOfType(NotFoundException.class)
+                .isThrownBy(() -> userService.findReservations("00456789", false))
+                .withMessage("User with phone number 00456789 not found");
+    }
+
+    @Test
+    public void findReservations_givenValidUser_returnsSorted() {
+        var reservations = new Reservation[] {
+                createReservation(1L, time(12, 0), time(13, 30)),
+                createReservation(2L, time(14, 0), time(15, 50))
+        };
+        var user = createUser(2L, "00456789", "jimmy", reservations);
+        var reservationDtos = List.of(
+                createReservationDto(1L, time(12, 0), time(13, 30)),
+                createReservationDto(2L, time(14, 0), time(15, 50))
+        );
+
+        when(userRepository.findByPhoneNumber("00456789"))
+                .thenReturn(Optional.of(user));
+
+        var actual = userService.findReservations("00456789", false);
+
+        assertThat(actual).containsExactlyElementsOf(reservationDtos);
+    }
+
+    @Test
+    public void findReservations_givenValidUserAndFutureFilter_returnsSortedAndFiltered() {
+        var reservations = new Reservation[] {
+                createReservation(1L, LocalDateTime.of(2000, 11, 11, 1, 1), LocalDateTime.of(2000, 11, 11, 12, 1)),
+                createReservation(2L, time(14, 0), time(15, 50))
+        };
+        var user = createUser(2L, "00456789", "jimmy", reservations);
+        var reservationDtos = List.of(
+                createReservationDto(2L, time(14, 0), time(15, 50))
+        );
+
+        when(userRepository.findByPhoneNumber("00456789"))
+                .thenReturn(Optional.of(user));
+
+        var actual = userService.findReservations("00456789", true);
+
+        assertThat(actual).containsExactlyElementsOf(reservationDtos);
+    }
+
+    private LocalDateTime time(int hour, int minute) {
+        return LocalDateTime.of(2020, 12, 1, hour, minute);
+    }
 }

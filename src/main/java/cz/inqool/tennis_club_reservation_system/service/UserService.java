@@ -1,5 +1,6 @@
 package cz.inqool.tennis_club_reservation_system.service;
 
+import cz.inqool.tennis_club_reservation_system.dto.ReservationDto;
 import cz.inqool.tennis_club_reservation_system.dto.UserCreateDto;
 import cz.inqool.tennis_club_reservation_system.dto.UserDto;
 import cz.inqool.tennis_club_reservation_system.dto.UserEditDto;
@@ -16,7 +17,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
+import java.time.Clock;
+import java.time.LocalDateTime;
+import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 @Slf4j
 @Service
@@ -26,12 +31,14 @@ public class UserService extends CrudService<User, Long, UserDto, UserCreateDto,
     private final UserRepository userRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final Clock clock;
 
-    public UserService(UserRepository userRepository, BeanMappingService beanMappingService, RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+    public UserService(UserRepository userRepository, BeanMappingService beanMappingService, RoleRepository roleRepository, PasswordEncoder passwordEncoder, Clock clock) {
         super(userRepository, beanMappingService, User.class, UserDto.class);
         this.userRepository = userRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.clock = clock;
     }
 
     @Override
@@ -86,14 +93,35 @@ public class UserService extends CrudService<User, Long, UserDto, UserCreateDto,
         user.removeRole(role);
     }
 
+
+    public List<ReservationDto> findReservations(String phoneNumber, boolean future) {
+        User user = tryToFindUserByPhoneNumber(phoneNumber);
+        log.info("Finding reservations of user {}", user.getUsername());
+
+        var reservations = user.getReservations();
+
+        if (future) {
+            var now = LocalDateTime.now(clock);
+            reservations = reservations.stream()
+                    .filter(res -> res.getFromDate().isAfter(now))
+                    .collect(Collectors.toList());
+        }
+
+        return beanMappingService.mapTo(reservations, ReservationDto.class);
+    }
+
     private User tryToFindUser(String username) {
         return userRepository.findByUsername(username)
                 .orElseThrow(() -> new NotFoundException("User with username " + username + " not found"));
+    }
+
+    private User tryToFindUserByPhoneNumber(String phoneNumber) {
+        return userRepository.findByPhoneNumber(phoneNumber)
+                .orElseThrow(() -> new NotFoundException("User with phone number " + phoneNumber + " not found"));
     }
 
     private Role tryToFindRole(String roleName) {
         return roleRepository.findByName(roleName)
                 .orElseThrow(() -> new NotFoundException("Role with name " + roleName + " not found"));
     }
-
 }

@@ -8,7 +8,6 @@ import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
-import java.util.List;
 import java.util.Optional;
 
 import static cz.inqool.tennis_club_reservation_system.model.factory.UserFactory.createUser;
@@ -28,7 +27,7 @@ public class UserDetailsServiceTest {
 
     @Test
     public void loadUserByUsername_givenValidUser_returnsCorrectDetails() {
-        var user = createUser(1L, "john123", List.of("USER", "ADMIN"));
+        var user = createUser(1L, "john123", new String[]{"USER", "ADMIN"});
 
         when(userRepository.findByUsername("john123"))
                 .thenReturn(Optional.of(user));

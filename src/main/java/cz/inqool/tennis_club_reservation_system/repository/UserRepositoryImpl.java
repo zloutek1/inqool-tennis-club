@@ -26,4 +26,17 @@ public class UserRepositoryImpl extends CrudRepositoryImpl<User, Long> implement
             return Optional.empty();
         }
     }
+
+    @Override
+    public Optional<User> findByPhoneNumber(String phoneNumber) {
+        try {
+            var foundEntity = entityManager
+                    .createQuery("select u from User u where u.phoneNumber = :phoneNumber", User.class)
+                    .setParameter("phoneNumber", phoneNumber)
+                    .getSingleResult();
+            return Optional.of(foundEntity);
+        } catch (NoResultException ex) {
+            return Optional.empty();
+        }
+    }
 }

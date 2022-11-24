@@ -1,10 +1,12 @@
 package cz.inqool.tennis_club_reservation_system.model.factory;
 
-import cz.inqool.tennis_club_reservation_system.model.User;
 import cz.inqool.tennis_club_reservation_system.dto.UserCreateDto;
 import cz.inqool.tennis_club_reservation_system.dto.UserDto;
 import cz.inqool.tennis_club_reservation_system.dto.UserEditDto;
+import cz.inqool.tennis_club_reservation_system.model.Reservation;
+import cz.inqool.tennis_club_reservation_system.model.User;
 
+import java.util.Arrays;
 import java.util.HashSet;
 import java.util.List;
 
@@ -28,19 +30,18 @@ public class UserFactory {
         return user;
     }
 
-
     public static User createUser(Long id, String username, String password) {
         var user = createUser(id, username);
         user.setPassword(password);
         return user;
     }
 
-    public static User createUser(Long id, String username, List<String> roleNames) {
+    public static User createUser(Long id, String username, String[] roleNames) {
         var user = createUser(id, username);
 
         user.setRoles(new HashSet<>());
-        for (int i = 0; i < roleNames.size(); ++i) {
-            user.addRole(createRole((long) i, roleNames.get(i)));
+        for (int i = 0; i < roleNames.length; ++i) {
+            user.addRole(createRole((long) i, roleNames[i]));
         }
 
         return user;
@@ -49,6 +50,12 @@ public class UserFactory {
     public static User createUser(Long id, String phoneNumber, String username, String password) {
         var user = createUser(id, username, password);
         user.setPhoneNumber(phoneNumber);
+        return user;
+    }
+
+    public static User createUser(Long id, String phoneNumber, String username, Reservation[] reservations) {
+        var user = createUser(id, phoneNumber, username);
+        user.setReservations(Arrays.asList(reservations));
         return user;
     }
 

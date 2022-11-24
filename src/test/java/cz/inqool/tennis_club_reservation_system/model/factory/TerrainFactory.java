@@ -16,8 +16,18 @@ public class TerrainFactory {
         return terrain;
     }
 
+    public static Terrain createTerrain(Long id, String terrainType, BigDecimal price) {
+        var terrain = new Terrain(terrainType, price);
+        terrain.setId(id);
+        return terrain;
+    }
+
     public static TerrainDto createTerrainDto(Long id, String terrainType) {
         return new TerrainDto(id, terrainType, defaultPrice);
+    }
+
+    public static TerrainDto createTerrainDto(Long id, String terrainType, BigDecimal price) {
+        return new TerrainDto(id, terrainType, price);
     }
 
     public static TerrainCreateDto createTerrainCreateDto(String terrainType) {

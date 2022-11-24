@@ -1,6 +1,7 @@
 package cz.inqool.tennis_club_reservation_system.controller;
 
 import cz.inqool.tennis_club_reservation_system.exceptions.NotFoundException;
+import cz.inqool.tennis_club_reservation_system.model.GameType;
 import cz.inqool.tennis_club_reservation_system.service.UserService;
 import cz.inqool.tennis_club_reservation_system.dto.UserDto;
 import org.junit.jupiter.api.Test;
@@ -23,6 +24,7 @@ import java.util.Optional;
 import java.util.stream.Stream;
 
 import static cz.inqool.tennis_club_reservation_system.TestUtils.convertToJson;
+import static cz.inqool.tennis_club_reservation_system.model.factory.ReservationFactory.createReservationDto;
 import static cz.inqool.tennis_club_reservation_system.model.factory.UserFactory.*;
 import static org.hamcrest.Matchers.hasSize;
 import static org.mockito.ArgumentMatchers.any;
@@ -250,6 +252,52 @@ public class UserControllerTest {
 
         mockMvc.perform(post("/api/v1/user/kayle22/role/missingRole/remove"))
                 .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username="spring", authorities = "ADMIN")
+    public void findAllUsersReservations_withInvalidUser_returnsNotFound() throws Exception {
+        when(userService.findReservations("00456789", false))
+                .thenThrow(new NotFoundException("User with phone number 00456789 not found"));
+
+        mockMvc.perform(get("/api/v1/user/00456789/reservations"))
+                .andExpect(status().isNotFound());
+    }
+
+    @Test
+    @WithMockUser(username="spring", authorities = "ADMIN")
+    public void findAllCourtReservations_withValidPhoneNumber_returnsReservations() throws Exception {
+        var reservations = List.of(
+                createReservationDto(2L, GameType.SINGLES),
+                createReservationDto(1L, GameType.DOUBLES)
+        );
+
+        when(userService.findReservations("00456789", false))
+                .thenReturn(reservations);
+
+        mockMvc.perform(get("/api/v1/user/00456789/reservations"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value(2L))
+                .andExpect(jsonPath("$[0].gameType").value("SINGLES"));
+    }
+
+    @Test
+    @WithMockUser(username="spring", authorities = "ADMIN")
+    public void findAllCourtReservations_withValidPhoneNumberAndFutureSort_returnsReservations() throws Exception {
+        var reservations = List.of(
+                createReservationDto(2L, GameType.SINGLES),
+                createReservationDto(1L, GameType.DOUBLES)
+        );
+
+        when(userService.findReservations("00456789", true))
+                .thenReturn(reservations);
+
+        mockMvc.perform(get("/api/v1/user/00456789/reservations?future=true"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$",hasSize(2)))
+                .andExpect(jsonPath("$[0].id").value(2L))
+                .andExpect(jsonPath("$[0].gameType").value("SINGLES"));
     }
 
     @Test

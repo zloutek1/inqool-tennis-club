@@ -7,10 +7,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 import javax.persistence.*;
-import java.util.Collection;
-import java.util.HashSet;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 @Entity
 @Table(name = "users")
@@ -36,7 +33,8 @@ public class User extends BaseEntity implements UserDetails {
 
     @ToString.Exclude
     @OneToMany
-    private Set<Reservation> reservations = new HashSet<>();
+    @OrderBy("fromDate")
+    private List<Reservation> reservations = new ArrayList<>();
 
     public User(@NonNull String phoneNumber, @NonNull String username, @NonNull String password) {
         this.phoneNumber = phoneNumber;

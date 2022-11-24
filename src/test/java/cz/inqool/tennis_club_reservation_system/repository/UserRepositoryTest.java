@@ -40,4 +40,20 @@ public class UserRepositoryTest {
         assertThat(actual).contains(user);
     }
 
+    @Test
+    public void findByPhoneNumber_givenMissingUser_returnsEmpty() {
+        var actual = userRepository.findByPhoneNumber("00999999");
+        assertThat(actual).isEmpty();
+    }
+
+    @Test
+    public void findByPhoneNumber_givenExistingUser_returnsUser() {
+        var user = createUser(null,  "00546789", "billy22", "pass");
+        entityManager.persist(user);
+
+        var actual = userRepository.findByPhoneNumber("00546789");
+
+        assertThat(actual).contains(user);
+    }
+
 }
