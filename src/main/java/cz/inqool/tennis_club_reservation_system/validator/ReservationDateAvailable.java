@@ -16,7 +16,7 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 @Constraint(validatedBy = ReservationDateAvailableValidator.class)
 public @interface ReservationDateAvailable {
 
-    String message() default "The fields must match";
+    String message() default "Reservation date not available";
     Class<?>[] groups() default {};
     Class<? extends Payload>[] payload() default {};
 
