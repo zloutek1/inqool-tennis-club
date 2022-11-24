@@ -39,7 +39,7 @@ public class RoleServiceTest {
                 .thenReturn(role);
 
         var createDto = new RoleCreateDto("MODERATOR");
-        var actual = roleService.saveRole(createDto);
+        var actual = roleService.save(createDto);
 
         verify(roleRepository).save(any(Role.class));
         assertThat(actual)
@@ -54,7 +54,7 @@ public class RoleServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThatExceptionOfType(ServiceException.class)
-                .isThrownBy(() -> roleService.editRole(roleDto))
+                .isThrownBy(() -> roleService.edit(roleDto))
                 .withMessage("Role with id 999 not found");
     }
 
@@ -66,12 +66,12 @@ public class RoleServiceTest {
 
         when(roleRepository.findById(any()))
                 .thenReturn(Optional.of(role));
-        when(roleRepository.save(any()))
+        when(roleRepository.update(any()))
                 .thenReturn(role);
 
-        var editedUser = roleService.editRole(roleEditDto);
+        var editedUser = roleService.edit(roleEditDto);
 
-        verify(roleRepository).save(any(Role.class));
+        verify(roleRepository).update(any(Role.class));
         assertThat(editedUser).isEqualTo(roleDto);
     }
 
@@ -81,7 +81,7 @@ public class RoleServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThatExceptionOfType(ServiceException.class)
-                .isThrownBy(() -> roleService.deleteRole(1L))
+                .isThrownBy(() -> roleService.deleteById(1L))
                 .withMessage("Role with id 1 not found");
     }
 
@@ -93,7 +93,7 @@ public class RoleServiceTest {
         when(roleRepository.findById(eq(1L)))
                 .thenReturn(Optional.of(role));
 
-        RoleDto actual = roleService.deleteRole(1L);
+        RoleDto actual = roleService.deleteById(1L);
 
         verify(roleRepository).softDeleteById(1L);
         assertThat(actual).isEqualTo(expected);
@@ -114,7 +114,7 @@ public class RoleServiceTest {
         when(roleRepository.findAll(any(Pageable.class)))
                 .thenReturn(new PageImpl<>(roles));
 
-        assertThat(roleService.findAllRoles(pageable))
+        assertThat(roleService.findAll(pageable))
                 .containsExactlyInAnyOrderElementsOf(roleDtos);
     }
 

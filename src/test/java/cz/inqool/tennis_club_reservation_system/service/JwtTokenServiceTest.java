@@ -18,11 +18,11 @@ public class JwtTokenServiceTest {
     @Autowired
     private JwtTokenService tokenUtil;
 
-    private final String jwtToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMixiaWxsMjIiLCJpc3MiOiJpbnFvb2wuY3oiLCJpYXQiOjE1NTUzMzY4MDAsImV4cCI6MTU1NTMzNjg2MH0.f7N1zKGd0od-GTfzjcIlWsm4XZSGCiSvvzz5-OJnm5KDzDp4VH9iI2yvZ-20-G4p99Rz10Xv9SCk0RCYocI4DQ";
+    private final String jwtToken = "eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIxMiwwMDEyMzQ1Njc4OSxiaWxsMjIiLCJpc3MiOiJpbnFvb2wuY3oiLCJpYXQiOjE1NTUzMzY4MDAsImV4cCI6MTU1NTMzNjg2MH0.Mh-r4APEr7Md1T4BtWCPsWqNrY-llGVays5WdAC4MWHa7qgXO0MLyl8W7ZIr-VG1KtV2s1kKt4gUJVK71D1jEw";
 
     @Test
     public void generateAccessToken_givenUserDto_returnsJWTToken() {
-        var userDto = createUserDto(12L, "bill22");
+        var userDto = createUserDto(12L,  "00123456789", "bill22");
 
         var token = tokenUtil.generateAccessToken(userDto);
 
@@ -34,6 +34,13 @@ public class JwtTokenServiceTest {
         Long id = tokenUtil.getUserId(jwtToken);
 
         assertThat(id).isEqualTo(12L);
+    }
+
+    @Test
+    public void getPhoneNumber_givenValidJWTToken_returnsPhoneNumber() {
+        String username = tokenUtil.getPhoneNumber(jwtToken);
+
+        assertThat(username).isEqualTo("00123456789");
     }
 
     @Test

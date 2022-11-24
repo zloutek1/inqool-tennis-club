@@ -185,7 +185,7 @@ public class RefreshTokenServiceTest {
 
         var actual = refreshTokenService.regenerateAccessToken(token);
         assertThat(actual.getRefreshToken()).isEqualTo(token);
-        assertThat(actual.getAccessToken()).isEqualTo("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyLHRoZUNvb2xHdXk0NCIsImlzcyI6ImlucW9vbC5jeiIsImlhdCI6MTU1NTMzNjgwMCwiZXhwIjoxNTU1MzM2ODYwfQ.2NPYJnD8Eg2CgyVAN0yHrg0qLoTnOR11x2JzCi9cAtwffpPCKcTkoYGEf3TYAGFVCvAlVXoKJBTFegY8cz0rAw");
+        assertThat(actual.getAccessToken()).isEqualTo("eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiIyLDIwMiA1NTUgMDEyNSxrYXlsZTIyIiwiaXNzIjoiaW5xb29sLmN6IiwiaWF0IjoxNTU1MzM2ODAwLCJleHAiOjE1NTUzMzY4NjB9.YWe5c1hm6CrrzRK2howXLnV35o1D2-tdbjVHRqmsZKCb5caC80eX-3u6L03Eto--l2wTkYoD_tvCj8NM5oArpA");
     }
 
     @Test

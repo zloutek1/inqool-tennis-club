@@ -50,7 +50,7 @@ public class RoleControllerTest {
                 createRoleDto(2L, "ADMIN")
         );
 
-        when(roleService.findAllRoles(any(Pageable.class)))
+        when(roleService.findAll(any(Pageable.class)))
                 .thenReturn(new PageImpl<>(users));
 
         mockMvc.perform(get("/api/v1/role/"))
@@ -66,7 +66,7 @@ public class RoleControllerTest {
         var createDto = RoleFactory.createRoleCreateDto("USER");
         var createdRoleDto = createRoleDto(1L, "USER");
 
-        when(roleService.saveRole(createDto))
+        when(roleService.save(createDto))
                 .thenReturn(createdRoleDto);
 
         mockMvc.perform(put("/api/v1/role/new")
@@ -83,7 +83,7 @@ public class RoleControllerTest {
         var roleDto = createRoleDto(1L, "USER");
         var editedRole = createRoleDto(1L, "USER");
 
-        when(roleService.editRole(roleDto))
+        when(roleService.edit(roleDto))
                 .thenReturn(editedRole);
 
         mockMvc.perform(put("/api/v1/role/edit")
@@ -99,7 +99,7 @@ public class RoleControllerTest {
     public void editRole_withInvalidForm_returnsNotFound() throws Exception {
         var roleDto = createRoleDto(999L, "USER");
 
-        when(roleService.editRole(roleDto))
+        when(roleService.edit(roleDto))
                 .thenThrow(new NotFoundException("Role with id 999 not found"));
 
         mockMvc.perform(put("/api/v1/role/edit")
@@ -111,7 +111,7 @@ public class RoleControllerTest {
     @Test
     @WithMockUser(username="spring", authorities = "ADMIN")
     public void deleteRole_withInvalidId_returnsNotFound() throws Exception {
-        when(roleService.deleteRole(999L))
+        when(roleService.deleteById(999L))
                 .thenThrow(new NotFoundException("Role with id 999 not found"));
 
         mockMvc.perform(delete("/api/v1/role/delete/999"))
@@ -123,7 +123,7 @@ public class RoleControllerTest {
     public void deleteRole_withValidId_shouldDeleteUseAndReturnDeleted() throws Exception {
         var deleteDto = createRoleDto(1L, "USER");
 
-        when(roleService.deleteRole(1L))
+        when(roleService.deleteById(1L))
                 .thenReturn(deleteDto);
 
         mockMvc.perform(delete("/api/v1/role/delete/1"))

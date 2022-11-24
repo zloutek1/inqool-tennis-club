@@ -48,7 +48,7 @@ public class UserControllerTest {
                 createUserDto(2L, "bob98")
         );
 
-        when(userService.findAllUsers(any(Pageable.class)))
+        when(userService.findAll(any(Pageable.class)))
                 .thenReturn(new PageImpl<>(users));
 
         mockMvc.perform(get("/api/v1/user/"))
@@ -63,7 +63,7 @@ public class UserControllerTest {
     public void findUserById_withValidId_returnsUser() throws Exception {
         var expected = createUserDto(1L, "john22");
 
-        when(userService.findUserById(1L))
+        when(userService.findById(1L))
                 .thenReturn(Optional.of(expected));
 
         mockMvc.perform(get("/api/v1/user/1"))
@@ -75,7 +75,7 @@ public class UserControllerTest {
     @Test
     @WithMockUser(username="spring", authorities = "ADMIN")
     public void findUserById_withInvalidId_returnsNotFound() throws Exception {
-        when(userService.findUserById(999L))
+        when(userService.findById(999L))
                 .thenReturn(Optional.empty());
 
         mockMvc.perform(get("/api/v1/user/999"))
@@ -112,7 +112,7 @@ public class UserControllerTest {
         var createDto = createUserCreateDto("kayle22");
         var createdUser = createUserDto(1L, "kayle22");
 
-        when(userService.saveUser(createDto))
+        when(userService.save(createDto))
                 .thenReturn(createdUser);
 
         mockMvc.perform(put("/api/v1/user/new")
@@ -129,7 +129,7 @@ public class UserControllerTest {
         var userEditDto = createUserEditDto(1L, "kayle23");
         var editedUser = createUserDto(1L, "kayle23");
 
-        when(userService.editUser(userEditDto))
+        when(userService.edit(userEditDto))
                 .thenReturn(editedUser);
 
         mockMvc.perform(put("/api/v1/user/edit")
@@ -139,7 +139,7 @@ public class UserControllerTest {
                 .andExpect(jsonPath("$.id").value(1L))
                 .andExpect(jsonPath("$.username").value("kayle23"));
 
-        verify(userService).editUser(userEditDto);
+        verify(userService).edit(userEditDto);
     }
 
     @Test
@@ -147,7 +147,7 @@ public class UserControllerTest {
     public void editUser_withInvalidForm_returnsNotFound() throws Exception {
         var userEditDto = createUserEditDto(999L, "kayle22");
 
-        when(userService.editUser(userEditDto))
+        when(userService.edit(userEditDto))
                 .thenThrow(new NotFoundException("User with id 999 not found"));
 
         mockMvc.perform(put("/api/v1/user/edit")
@@ -159,7 +159,7 @@ public class UserControllerTest {
     @Test
     @WithMockUser(username="spring", authorities = "ADMIN")
     public void deleteUser_withInvalidId_returnsNotFound() throws Exception {
-        when(userService.deleteUser(999L))
+        when(userService.deleteById(999L))
                 .thenThrow(new NotFoundException("User with id 999 not found"));
 
         mockMvc.perform(delete("/api/v1/user/delete/999"))
@@ -171,7 +171,7 @@ public class UserControllerTest {
     public void deleteUser_withValidId_shouldDeleteUseAndReturnDeleted() throws Exception {
         var deleteDto = createUserDto(1L, "user-name");
 
-        when(userService.deleteUser(1L))
+        when(userService.deleteById(1L))
                 .thenReturn(deleteDto);
 
         mockMvc.perform(delete("/api/v1/user/delete/1"))

@@ -55,7 +55,7 @@ public class UserServiceTest {
         when(passwordEncoder.encode(any()))
                 .thenReturn("hashedPassword2");
 
-        var actual = userService.saveUser(userCreateDto);
+        var actual = userService.save(userCreateDto);
 
         verify(userRepository).save(captor.capture());
         verify(passwordEncoder).encode(any());
@@ -72,7 +72,7 @@ public class UserServiceTest {
                 .thenReturn(Optional.empty());
 
         assertThatExceptionOfType(ServiceException.class)
-                .isThrownBy(() -> userService.editUser(userEditDto))
+                .isThrownBy(() -> userService.edit(userEditDto))
                 .withMessage("User with id 999 not found");
     }
 
@@ -89,7 +89,7 @@ public class UserServiceTest {
         when(passwordEncoder.encode(any()))
                 .thenReturn("hashedPassword2");
 
-        var editedUser = userService.editUser(userEditDto);
+        var editedUser = userService.edit(userEditDto);
 
         verify(userRepository).save(any(User.class));
         assertThat(editedUser).isEqualTo(userDto);
@@ -100,7 +100,7 @@ public class UserServiceTest {
         when(userRepository.findById(eq(1L))).thenReturn(Optional.empty());
 
         assertThatExceptionOfType(ServiceException.class)
-                .isThrownBy(() -> userService.deleteUser(1L))
+                .isThrownBy(() -> userService.deleteById(1L))
                 .withMessage("User with id 1 not found");
     }
 
@@ -111,7 +111,7 @@ public class UserServiceTest {
 
         when(userRepository.findById(eq(1L))).thenReturn(Optional.of(user));
 
-        UserDto actual = userService.deleteUser(1L);
+        UserDto actual = userService.deleteById(1L);
 
         verify(userRepository).softDeleteById(1L);
         assertThat(actual).isEqualTo(expected);
@@ -126,7 +126,7 @@ public class UserServiceTest {
         when(userRepository.findAll(any(Pageable.class)))
                 .thenReturn(new PageImpl<>(users));
 
-        var actual = userService.findAllUsers(pageable);
+        var actual = userService.findAll(pageable);
 
         assertThat(actual).containsExactlyInAnyOrderElementsOf(userDtos);
     }
@@ -139,7 +139,7 @@ public class UserServiceTest {
         when(userRepository.findById(2L))
                 .thenReturn(Optional.of(user));
 
-        assertThat(userService.findUserById(2L))
+        assertThat(userService.findById(2L))
                 .contains(userDto);
     }
 
@@ -148,7 +148,7 @@ public class UserServiceTest {
         when(userRepository.findById(anyLong()))
                 .thenReturn(Optional.empty());
 
-        assertThat(userService.findUserById(999L))
+        assertThat(userService.findById(999L))
                 .isEmpty();
     }
 

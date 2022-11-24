@@ -42,14 +42,14 @@ public class CrudRepositoryTest {
 
     @Test
     void findAll_givenTwoUsers_returnsTwo() {
-        em.merge(createUser(1L, "bob"));
-        em.merge(createUser(2L, "scott"));
+        em.merge(createUser(1L, "742 100 1181",  "bob", "pass"));
+        em.merge(createUser(2L, "314 971 2520", "kayle", "pass2"));
 
         var actual = userRepository.findAll(PageRequest.of(0, 10));
 
         assertThat(actual)
-                .extracting(User::getUsername)
-                .containsExactlyInAnyOrder("bob", "scott");
+                .extracting(User::getPhoneNumber)
+                .containsExactlyInAnyOrder("742 100 1181", "314 971 2520");
     }
 
     @Test
@@ -60,7 +60,7 @@ public class CrudRepositoryTest {
 
     @Test
     void findById_givenSoftDeletedUser_returnsEmpty() {
-        var user = createUser(1L, "napo");
+        var user = createUser(1L, "442 653 7186", "john");
         user.setDeletedAt(LocalDateTime.now(clock));
         em.merge(user);
 
@@ -71,7 +71,7 @@ public class CrudRepositoryTest {
 
     @Test
     void findById_givenExistingUser_returnsUser() {
-        var user = em.merge(createUser(1L, "travis"));
+        var user = em.merge(createUser(1L, "442 653 7186", "jimmy"));
 
         var actual = userRepository.findById(1L);
 
@@ -80,8 +80,8 @@ public class CrudRepositoryTest {
 
     @Test
     void save_givenExisingUser_throws() {
-        em.merge(createUser(1L, "travis"));
-        var user = createUser(null, "travis");
+        em.merge(createUser(1L, "442 653 7186", "ola"));
+        var user = createUser(null, "442 653 7186", "ola");
 
         assertThatExceptionOfType(DataAccessException.class)
                 .isThrownBy(() -> userRepository.save(user));
@@ -89,7 +89,7 @@ public class CrudRepositoryTest {
 
     @Test
     void save_givenNewUser_saves() {
-        var user = createUser(null, "travis");
+        var user = createUser(null, "442 653 7186", "frank");
 
         var savedUser = userRepository.save(user);
 
@@ -98,7 +98,7 @@ public class CrudRepositoryTest {
 
     @Test
     void update_givenMissingUser_throws() {
-        var user = createUser(null, "bob");
+        var user = createUser(null, "175 183 0008", "george");
 
         assertThatExceptionOfType(DataAccessException.class)
                 .isThrownBy(() -> userRepository.update(user));
@@ -106,16 +106,16 @@ public class CrudRepositoryTest {
 
     @Test
     void update_givenUpdatedUser_updates() {
-        var user = createUser(null, "john");
+        var user = createUser(null, "175-183-0008", "fatima");
         em.persist(user);
 
-        user.setUsername("billy");
+        user.setPhoneNumber("643 175 5572");
         userRepository.update(user);
         em.flush();
         em.clear();
 
         var foundUser = em.find(User.class, user.getId());
-        assertThat(foundUser.getUsername()).isEqualTo("billy");
+        assertThat(foundUser.getPhoneNumber()).isEqualTo("643 175 5572");
     }
 
     @Test
@@ -126,7 +126,7 @@ public class CrudRepositoryTest {
 
     @Test
     void softDeleteById_givenExistingId_deletes() {
-        var user = createUser(null, "john");
+        var user = createUser(null, "643 175 5572", "olga");
         em.persist(user);
 
         userRepository.softDeleteById(user.getId());

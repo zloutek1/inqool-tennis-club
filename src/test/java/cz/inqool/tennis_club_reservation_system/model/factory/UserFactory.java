@@ -12,12 +12,12 @@ import static cz.inqool.tennis_club_reservation_system.model.factory.RoleFactory
 
 public class UserFactory {
 
-    private static final String defaultFullName = "John Snow";
-    private static final String defaultUsername = "theCoolGuy44";
+    private static final String defaultPhoneNumber = "202 555 0125";
+    private static final String defaultUsername = "kayle22";
     private static final String defaultPassword = "IcK7wDN3hs";
 
     public static User createUser(Long id) {
-        var user = new User(defaultFullName, defaultUsername, defaultPassword);
+        var user = new User(defaultPhoneNumber, defaultUsername, defaultPassword);
         user.setId(id);
         return user;
     }
@@ -27,6 +27,7 @@ public class UserFactory {
         user.setUsername(username);
         return user;
     }
+
 
     public static User createUser(Long id, String username, String password) {
         var user = createUser(id, username);
@@ -45,8 +46,14 @@ public class UserFactory {
         return user;
     }
 
+    public static User createUser(Long id, String phoneNumber, String username, String password) {
+        var user = createUser(id, username, password);
+        user.setPhoneNumber(phoneNumber);
+        return user;
+    }
+
     public static UserDto createUserDto(Long id) {
-        return new UserDto(id, defaultFullName, defaultUsername, List.of());
+        return new UserDto(id, defaultPhoneNumber, defaultUsername, List.of());
     }
 
     public static UserDto createUserDto(Long id, String username) {
@@ -55,15 +62,22 @@ public class UserFactory {
         return userDto;
     }
 
+    public static UserDto createUserDto(Long id, String phoneNumber, String username) {
+        var user = createUserDto(id, username);
+        user.setPhoneNumber(phoneNumber);
+        return user;
+    }
+
+
     public static UserEditDto createUserEditDto(Long id, String newUsername) {
-        return new UserEditDto(id, defaultFullName, newUsername, defaultPassword, defaultPassword);
+        return new UserEditDto(id, defaultPhoneNumber, newUsername, defaultPassword, defaultPassword);
     }
 
     public static UserCreateDto createUserCreateDto(String username) {
-        return new UserCreateDto(defaultFullName, username, defaultPassword, defaultPassword);
+        return new UserCreateDto(defaultPhoneNumber, username, defaultPassword, defaultPassword);
     }
 
     public static UserCreateDto createUserCreateDto(String username, String password) {
-        return new UserCreateDto(defaultFullName, username, password, password);
+        return new UserCreateDto(defaultPhoneNumber, username, password, password);
     }
 }
