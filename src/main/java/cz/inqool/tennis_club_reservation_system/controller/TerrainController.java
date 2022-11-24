@@ -18,7 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
 
 @RestController
-@Tag(name = "reservation")
+@Tag(name = "terrain")
 @RequestMapping(ApiUris.ROOT_URI)
 @RequiredArgsConstructor
 public class TerrainController {
