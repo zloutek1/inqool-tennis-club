@@ -14,7 +14,7 @@ import static cz.inqool.tennis_club_reservation_system.model.factory.RoleFactory
 
 public class UserFactory {
 
-    private static final String defaultPhoneNumber = "202 555 0125";
+    private static final String defaultPhoneNumber = "+919367788755";
     private static final String defaultUsername = "kayle22";
     private static final String defaultPassword = "IcK7wDN3hs";
 
